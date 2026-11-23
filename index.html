@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="Portal unificado de estudo prévio em Aconselhamento Bíblico (6 dias · 30 minutos por dia).">
+  <title>Esperança que Sustenta · Portal de Estudo Prévio (6 Dias)</title>
+  <style>
+    :root{--forest:#183b35;--forest-2:#234c42;--forest-3:#0d2826;--paper:#faf9f4;--bg:#eceee8;--ink:#18302b;--muted:#596b63;--line:#d9dfd6;--gold:#c28d3c;--gold-light:#f5e8ca;--sage:#e8f0e8;--coral:#ae6045;--white:#fff;--shadow:0 22px 70px rgba(17,41,35,.10);--sans:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--serif:Georgia,"Times New Roman",serif}
+    *{box-sizing:border-box}html{scroll-behavior:auto}body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55}button,input,textarea{font:inherit}button{cursor:pointer}a{color:#1e6252;text-underline-offset:3px}a:hover{color:#124437}button:focus-visible,a:focus-visible,textarea:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #d6a443;outline-offset:3px}::selection{background:#f3dca5;color:#1b302b}
+
+    /* === PORTAL INICIAL (GRADE DE CARTÕES) === */
+    .portal-view{min-height:100vh;display:flex;flex-direction:column}
+    .portal-hero{background:var(--forest);color:#f6f7f0;padding:52px 24px 58px;border-bottom:4px solid var(--gold);position:relative;overflow:hidden}
+    .portal-hero::after{content:"✦";position:absolute;right:6%;top:18px;font-size:180px;color:rgba(230,196,134,.06);font-family:var(--serif);pointer-events:none}
+    .portal-wrap{max-width:1100px;margin:0 auto;width:100%}
+    .portal-kicker{display:flex;align-items:center;gap:10px;font-size:11px;font-weight:850;letter-spacing:.17em;text-transform:uppercase;color:#e3c896;margin-bottom:12px}
+    .portal-kicker::before{content:"";width:24px;height:2px;background:var(--gold)}
+    .portal-hero h1{font-family:var(--serif);font-size:clamp(34px,4.5vw,52px);font-weight:500;letter-spacing:-.04em;margin:0 0 12px;line-height:1.08}
+    .portal-sub{color:#d1e0d4;max-width:670px;margin:0 0 26px;font-size:16.5px;line-height:1.5}
+    .progress-panel{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:20px 24px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px;backdrop-filter:blur(6px)}
+    .bar-wrap{flex:1;min-width:250px}
+    .bar-label{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:9px;color:#e9ecdf}
+    .track{height:8px;background:rgba(255,255,255,.16);border-radius:99px;overflow:hidden}
+    .fill{height:100%;width:0%;background:#e6bd70;border-radius:99px;transition:width .35s ease}
+    .portal-actions{display:flex;flex-wrap:wrap;gap:10px}
+    .btn-gold{background:#e6bd70;color:#1d332a;border:1px solid #e6bd70;border-radius:9px;padding:11px 18px;font-weight:850;font-size:13px;transition:background .15s}
+    .btn-gold:hover{background:#f2ce8b}
+    .btn-ghost-light{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.28);border-radius:9px;padding:11px 16px;font-weight:750;font-size:13px}
+    .btn-ghost-light:hover{background:rgba(255,255,255,.16)}
+    .portal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin:36px auto 60px;padding:0 24px}
+    .p-card{background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:24px 25px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 14px 38px rgba(17,41,35,.06);transition:transform .16s,box-shadow .16s,border-color .16s}
+    .p-card:hover{transform:translateY(-3px);box-shadow:0 20px 48px rgba(17,41,35,.10);border-color:#b8c8ba}
+    .p-card-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:13px}
+    .day-tag{font-size:11px;font-weight:900;letter-spacing:.12em;color:#a57737;text-transform:uppercase}
+    .badge{font-size:11px;font-weight:750;padding:4px 10px;border-radius:20px;background:#e8f0e8;color:var(--forest);white-space:nowrap}
+    .badge.pending{background:#f0f2ee;color:var(--muted)}
+    .badge.doing{background:#faeed6;color:#805b2a}
+    .p-card h2{font-family:var(--serif);font-size:21px;font-weight:500;margin:0 0 9px;color:var(--forest);line-height:1.25}
+    .p-card p{font-size:13.5px;color:#52665d;margin:0 0 18px;line-height:1.5}
+    .p-card-foot{display:flex;justify-content:space-between;align-items:center;padding-top:14px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+    .open-day-btn{background:var(--forest);color:#fff;border:0;padding:9px 15px;border-radius:8px;font-weight:800;font-size:12px;transition:background .15s}
+    .open-day-btn:hover{background:#265b4b}
+    .portal-footer{margin-top:auto;text-align:center;padding:20px;font-size:12px;color:var(--muted);border-top:1px solid var(--line);background:#f4f5f0}
+
+    /* === AMBIENTE DE ESTUDO DO DIA === */
+    .app{min-height:100vh}.sidebar{width:272px;position:fixed;inset:0 auto 0 0;background:var(--forest-3);color:#f4f4eb;display:flex;flex-direction:column;z-index:20;box-shadow:10px 0 40px rgba(18,48,39,.06)}.brand{padding:24px 25px 20px;border-bottom:1px solid rgba(255,255,255,.12)}.home-side-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:6px;background:rgba(230,189,112,.16);color:#f2d18e;border:1px solid rgba(230,189,112,.45);border-radius:8px;padding:8px 10px;font-size:11.5px;font-weight:800;margin-bottom:16px;transition:background .15s}.home-side-btn:hover{background:rgba(230,189,112,.28);color:#fff}.brand-title{font-family:var(--serif);font-size:22px;letter-spacing:-.02em;line-height:1.12}.brand-sub{display:block;color:#b6c9bb;font-size:11px;letter-spacing:.15em;text-transform:uppercase;margin-top:7px}.side-label{padding:18px 25px 8px;color:#a9c1b5;font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}.chapter-nav{overflow:auto;min-height:0;padding:0 12px 14px;scrollbar-color:#557165 transparent}.chapter-btn{width:100%;display:flex;align-items:center;gap:11px;border:0;border-radius:10px;background:transparent;color:#c5d5cc;text-align:left;padding:10px 12px;line-height:1.3;transition:background .15s,color .15s}.chapter-btn:hover{background:rgba(255,255,255,.07);color:#fff}.chapter-btn.active{background:#31574c;color:#fff}.chapter-num{font-size:11px;font-weight:700;color:#dbb773;width:21px;flex:none}.chapter-name{font-size:12px;font-weight:700;flex:1}.chapter-duration{font-size:10px;color:#adc4b5;white-space:nowrap}.side-footer{margin-top:auto;padding:15px 23px 22px;border-top:1px solid rgba(255,255,255,.12)}.side-progress-label{display:flex;justify-content:space-between;color:#c5d7ca;font-size:11px;margin-bottom:9px}.side-track{height:5px;border-radius:10px;background:#38574b;overflow:hidden}.side-fill{height:100%;width:0;background:#e2b36a;border-radius:inherit;transition:width .25s}.side-tools{display:flex;gap:8px;margin-top:15px}.side-tools button{flex:1;background:rgba(255,255,255,.08);color:#f4f4eb;border:1px solid rgba(255,255,255,.13);border-radius:8px;padding:8px 5px;font-size:11px;font-weight:750}.side-tools button:hover{background:rgba(255,255,255,.16)}.side-small{color:#a9bfb2;font-size:10px;line-height:1.45;margin:12px 1px 0}
+    .workspace{margin-left:272px;min-height:100vh;display:flex;flex-direction:column}.topbar{height:74px;position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 clamp(18px,3.4vw,48px);background:rgba(248,249,244,.96);border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}.top-left{display:flex;align-items:center;gap:12px;min-width:0}.menu-btn{display:none;width:37px;height:37px;border:1px solid var(--line);border-radius:8px;background:white;color:var(--ink);font-size:21px;line-height:1}.top-home-btn{border:1px solid #cad8cb;border-radius:8px;background:#fff;color:var(--forest);font-size:11px;font-weight:800;padding:7px 11px;white-space:nowrap}.top-home-btn:hover{background:#e7f0e7}.breadcrumb{font-size:11px;font-weight:800;color:#58746a;letter-spacing:.13em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.top-right{display:flex;align-items:center;gap:14px;white-space:nowrap}.top-counter{font-size:12px;font-weight:760;color:var(--forest);font-variant-numeric:tabular-nums}.top-divider{height:23px;width:1px;background:var(--line)}.timer-button{border:1px solid #b9c9bb;border-radius:9px;background:white;color:var(--forest);font-size:11px;font-weight:800;padding:9px 12px}.timer-button:hover{background:#edf3e9}.timer-time{font-size:13px;font-variant-numeric:tabular-nums;font-weight:800;color:var(--forest)}.timer-time small{font-size:11px;color:#788b81;font-weight:500}.presentation{width:min(1120px,calc(100% - 56px));margin:28px auto 20px}.slide{position:relative;overflow:hidden;min-height:620px;background:var(--paper);border:1px solid #e1e5dd;border-radius:15px;box-shadow:var(--shadow);display:flex;flex-direction:column}.slide:not(.hero)::before{content:"";position:absolute;width:210px;height:210px;right:-115px;top:-115px;border:1px solid #e6e9e0;border-radius:50%;pointer-events:none}.slide.hero{background:var(--forest);color:#f6f7f0;border-color:var(--forest);min-height:min(680px,calc(100vh - 210px))}.slide-head{position:relative;z-index:1;padding:clamp(31px,4.5vw,54px) clamp(27px,5.4vw,72px) 18px}.kicker{display:flex;align-items:center;gap:11px;font-size:11px;font-weight:850;letter-spacing:.17em;text-transform:uppercase;color:#63836f;margin:0 0 18px}.kicker::before{content:"";width:25px;height:2px;background:var(--gold);flex:none}.hero .kicker{color:#e3c896}.slide h1{font-family:var(--serif);font-size:clamp(35px,4.7vw,62px);letter-spacing:-.055em;line-height:1.06;font-weight:500;max-width:920px;margin:0 0 14px}.slide:not(.hero) h1{font-family:var(--serif);font-size:clamp(30px,3.3vw,46px);letter-spacing:-.047em;line-height:1.09;font-weight:500;max-width:900px;margin:0 0 14px}.lede{max-width:760px;font-size:clamp(16px,1.45vw,18.5px);line-height:1.53;color:#52665d;margin:0}.hero .lede{color:#d1e0d4;font-size:clamp(17.5px,1.7vw,21px);max-width:630px}.slide-body{position:relative;z-index:1;flex:1;padding:15px clamp(27px,5.4vw,72px) clamp(27px,4vw,44px)}.slide-body h3{font-family:var(--serif);font-size:21px;line-height:1.2;margin:0 0 10px;font-weight:500}.slide-body p{margin:0 0 13px}.slide-body ul,.slide-body ol{margin:8px 0 13px;padding-left:22px}.slide-body li{margin:6px 0}.slide-foot{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:13px clamp(27px,5.4vw,72px);border-top:1px solid var(--line);color:#728078;font-size:11px;letter-spacing:.01em}.hero .slide-foot{border-color:rgba(255,255,255,.18);color:#c3d2c5}.foot-source{max-width:75%}.foot-index{font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap;color:#436758}.hero .foot-index{color:#e3c58d}
+    .below{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:15px 0 25px}.nav-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid #cad8cb;background:#fff;color:var(--forest);border-radius:10px;padding:11px 17px;font-weight:800;font-size:13px;min-width:118px;box-shadow:0 3px 9px rgba(32,59,45,.03)}.nav-btn:hover:not(:disabled){background:#e7f0e7;border-color:#9bbba6}.nav-btn.next{background:var(--forest);color:#fff;border-color:var(--forest)}.nav-btn.next:hover:not(:disabled){background:#265b4b}.nav-btn:disabled{opacity:.37;cursor:not-allowed;box-shadow:none}.pace{text-align:center;min-width:0}.pace strong{display:block;font-size:11px;font-weight:850;color:var(--forest)}.pace span{font-size:11px;color:var(--muted)}.mini-progress{height:4px;background:#dce3d9;border-radius:5px;overflow:hidden;margin-top:8px}.mini-progress>div{height:100%;width:0;background:var(--gold);border-radius:inherit;transition:width .3s}
+    .eyeline{font-size:11px;text-transform:uppercase;letter-spacing:.13em;font-weight:850;color:#73937b;margin-bottom:9px}.hero-inner{display:grid;grid-template-columns:1.3fr .7fr;gap:18px;align-items:center;min-height:330px}.hero-note{max-width:570px;border-left:2px solid #dcb46a;padding-left:18px;margin:24px 0 22px;color:#e9ecdf;font-family:var(--serif);font-size:clamp(18.5px,1.9vw,23.5px);line-height:1.45}.hero-graphic{width:min(265px,100%);aspect-ratio:1;position:relative;margin:auto;display:grid;place-items:center}.orb{position:absolute;inset:7%;border:1px solid rgba(243,218,161,.42);border-radius:50%}.orb:nth-child(2){inset:18%;border-color:rgba(243,218,161,.27)}.orb:nth-child(3){inset:31%;border-color:rgba(243,218,161,.54)}.hero-graphic::after{content:"✦";font-size:50px;color:#e6c486;font-family:var(--serif)}.hero-graphic .orb::after{content:"";position:absolute;width:9px;height:9px;border-radius:50%;background:#e5c688;top:12%;right:14%}.hero-badges{display:flex;flex-wrap:wrap;gap:9px;margin-top:22px}.hero-badges span{border:1px solid rgba(255,255,255,.24);color:#e3ece0;border-radius:20px;font-size:11px;font-weight:750;padding:6px 11px}.action-primary{background:#e6bd70;border:1px solid #e6bd70;border-radius:9px;color:#233b31;padding:12px 18px;font-size:13px;font-weight:850}.action-primary:hover{background:#f2ce8b}.action-soft{background:#e8f0e8;border:1px solid #a7c6ae;border-radius:9px;color:var(--forest);padding:10px 15px;font-size:12px;font-weight:800}.action-soft:hover{background:#d7e7d6}.action-outline{background:transparent;border:1px solid #c4d2c5;border-radius:9px;color:var(--forest);padding:10px 15px;font-size:12px;font-weight:800}.action-outline:hover{background:#eef3e9}.hero .action-outline{color:#fff;border-color:rgba(255,255,255,.4)}.hero .action-outline:hover{background:rgba(255,255,255,.12)}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:15px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.card{background:#fff;border:1px solid var(--line);border-radius:11px;padding:18px 20px}.card h3{font-size:19px}.card p:last-child,.callout p:last-child{margin-bottom:0}.card strong{color:var(--forest)}.card .num{display:block;color:#a57737;font-weight:900;font-size:11.5px;letter-spacing:.12em;margin-bottom:8px}.card .small{font-size:13px;color:#536b5b}.card-sage{background:#edf3ea;border-color:#d3e2d1}.card-amber{background:#fcf6e9;border-color:#ecdfc4}.study-box{background:#fff;border:1px solid #d9dfd6;border-left:4px solid var(--gold);border-radius:0 10px 10px 0;padding:16px 20px;margin:14px 0;font-size:15px}.study-box .box-tag{display:block;font-size:10px;font-weight:850;letter-spacing:.13em;text-transform:uppercase;color:#9b6f2d;margin-bottom:7px}.study-box p{font-size:15px;line-height:1.62;color:#1e352f;margin:0 0 10px}.study-box p:last-child{margin-bottom:0}.callout{border-left:3px solid var(--gold);background:#f8f2e5;padding:15px 19px;border-radius:0 9px 9px 0;margin:16px 0}.callout.green{background:#eaf1e8;border-color:#6f967a}.callout strong{color:var(--forest)}.small{font-size:13px;color:#53645d}.tiny{font-size:11px;color:#687b71}.divider{height:1px;background:var(--line);margin:17px 0}.micro-list{list-style:none;padding:0!important;margin:0!important}.micro-list li{border-bottom:1px solid var(--line);padding:8px 0!important;margin:0!important}.micro-list li:last-child{border:0}.tagline{font-size:11px;color:#6d8175;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    .roadmap{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0}.road-row{background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;gap:7px;font-size:12px;font-weight:700}.road-row span{color:#6a7c6e;font-size:11px;font-variant-numeric:tabular-nums;font-weight:750}.activity{margin-top:18px;background:#eaf1ea;border:1px solid #d1e1d0;border-radius:12px;padding:18px 20px}.activity .activity-label{display:inline-flex;align-items:center;gap:7px;color:#3f7353;font-size:11px;font-weight:850;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}.activity p{font-size:14px}.prompt-label{display:block;font-size:12px;font-weight:800;color:var(--forest);margin:12px 0 5px}.note-input{display:block;width:100%;min-height:86px;border:1px solid #c9d9c8;border-radius:8px;background:#fff;resize:vertical;padding:10px 12px;color:var(--ink);font-size:13px;line-height:1.5}.note-input::placeholder{color:#84958a}.note-input:focus{border-color:#59896a}.save-note{font-size:11px;color:#6b8172;margin:5px 0 0!important}.reveal{border:1px solid #d8e3d6;background:#fff;border-radius:9px;margin-top:11px;padding:0 15px}.reveal summary{list-style:none;font-weight:800;color:#35614a;font-size:13px;padding:12px 2px;cursor:pointer}.reveal summary::before{content:"＋";margin-right:9px;color:#a97934}.reveal[open] summary::before{content:"−"}.reveal p,.reveal ul,.reveal ol{font-size:13px;color:#4d6056}.reveal p:first-of-type{padding-top:5px}.reveal p:last-child{padding-bottom:12px}
+    .quiz{border:1px solid #ccdacb;border-radius:11px;background:#fff;padding:16px 17px;margin:10px 0}.quiz-no{font-size:10px;letter-spacing:.13em;font-weight:850;text-transform:uppercase;color:#739175;margin-bottom:5px}.quiz-prompt{font-size:14px;font-weight:750;color:var(--ink);margin-bottom:11px}.quiz-options{display:grid;gap:7px}.quiz-option{text-align:left;border:1px solid #d9e2d9;border-radius:8px;background:#fbfcf9;color:#30463a;padding:10px 12px;font-size:13px;line-height:1.4;transition:.15s}.quiz-option:hover{border-color:#8eae94;background:#eef4ea}.quiz-option.selected{background:#e8f2e8;border-color:#6f9c78;box-shadow:inset 3px 0 #6e9b78}.quiz-option.selected.wrong{background:#fff1eb;border-color:#d3a28d;box-shadow:inset 3px 0 #bc7557}.feedback{padding:11px 13px;border-radius:8px;font-size:13px;line-height:1.5;margin-top:10px;background:#eaf4e9;color:#315845}.feedback.wrong{background:#fff1e8;color:#83503a}.feedback strong{display:block;margin-bottom:2px}.feedback:empty{display:none}.final-summary{background:#e9f2e7;border:1px solid #bcd4ba;border-radius:9px;padding:12px 15px;font-size:13px;margin-top:11px;min-height:48px}.check-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .modal[hidden]{display:none}.modal{position:fixed;z-index:40;inset:0;display:grid;place-items:center;padding:16px}.modal-dim{position:absolute;inset:0;background:rgba(8,32,27,.72)}.modal-panel{position:relative;background:#fbfaf5;border-radius:13px;width:min(680px,100%);max-height:min(82vh,860px);display:flex;flex-direction:column;box-shadow:0 25px 100px rgba(0,0,0,.22)}.modal-header{padding:21px 24px 15px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.modal-header h2{font-family:var(--serif);margin:0;font-size:26px;font-weight:500}.close-btn{border:1px solid var(--line);background:white;border-radius:8px;width:34px;height:34px;font-size:20px;line-height:1;color:var(--ink)}.modal-content{overflow:auto;padding:20px 24px 27px}.index-list{display:grid;grid-template-columns:1fr 1fr;gap:7px}.index-jump{display:block;width:100%;padding:11px 12px;text-align:left;border:1px solid var(--line);background:white;border-radius:8px;color:var(--ink);font-size:12px;line-height:1.35}.index-jump:hover{border-color:#91b49b;background:#eef4ed}.index-jump span{display:block;font-size:10px;color:#668677;font-weight:800;letter-spacing:.08em}.modal-note{font-size:12px;color:#586e60}.modal-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:15px}.mobile-mask{display:none}
+    [hidden]{display:none!important}
+    @media(max-width:1100px){.sidebar{width:239px}.workspace{margin-left:239px}.brand{padding-left:20px}.presentation{width:calc(100% - 38px)}.slide-head,.slide-body,.slide-foot{padding-left:37px;padding-right:37px}.portal-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:800px){.sidebar{transform:translateX(-100%);transition:transform .22s;width:min(295px,86vw)}body.menu-open .sidebar{transform:translateX(0)}.mobile-mask{display:none;position:fixed;inset:0;background:rgba(5,27,24,.5);z-index:19}body.menu-open .mobile-mask{display:block}.workspace{margin-left:0}.menu-btn{display:block}.topbar{height:64px;padding:0 16px}.presentation{width:calc(100% - 22px);margin:12px auto}.slide,.slide.hero{min-height:calc(100vh - 165px)}.slide-head{padding:30px 26px 14px}.slide-body{padding:12px 26px 30px}.slide-foot{padding:12px 26px}.hero-inner{grid-template-columns:1fr;min-height:0}.hero-graphic{position:absolute;opacity:.18;right:0;top:10px;width:210px;z-index:-1}.top-right{gap:8px}.breadcrumb{max-width:34vw}.timer-time small{display:none}}
+    @media(max-width:600px){body{font-size:15px}.portal-grid,.grid-2,.grid-3,.grid-4,.roadmap,.index-list{grid-template-columns:1fr}.slide.hero h1{font-size:40px}.slide:not(.hero) h1{font-size:32px}.slide-head{padding:26px 20px 12px}.slide-body{padding:10px 20px 26px}.slide-foot{padding:11px 20px}.top-counter,.top-divider{display:none}.below{gap:6px;padding:11px 2px 24px}.nav-btn{min-width:0;padding:10px 10px;font-size:11px}.pace{flex:1}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+    @media print{body{background:#fff;color:#111;font-size:10pt}.app,.portal-view,.modal,.mobile-mask{display:none!important}#print-pages{display:block!important}.print-page{break-inside:avoid;page-break-inside:avoid;border-bottom:1px solid #ccc;padding:18px 5px 14px}.print-page h2{font:normal 21pt Georgia,serif;margin:0 0 8px}.print-page h3{font:normal 13pt Georgia,serif}.print-page .grid-2,.print-page .grid-3,.print-page .grid-4{grid-template-columns:repeat(2,1fr)}.print-page .card,.print-page .activity,.print-page .quiz,.print-page .study-box{border:1px solid #ddd;background:#fff!important;box-shadow:none;padding:10px;margin:8px 0}.print-page .quiz-option,.print-page .action-primary,.print-page .action-outline,.print-page .action-soft,.print-page .note-input,.print-page .reveal summary{display:none!important}.print-page .reveal{border:0;padding:0}.print-page .reveal p,.print-page .reveal ol,.print-page .reveal ul{display:block}.print-page .slide-body{padding:0}.print-page .hero-graphic{display:none}}
+    #print-pages{display:none}
+  </style>
+</head>
+<body>
+
+<!-- ================= TELA 1: PORTAL EM GRADE DE CARTÕES ================= -->
+<div class="portal-view" id="portalView">
+  <header class="portal-hero">
+    <div class="portal-wrap">
+      <div class="portal-kicker">Aconselhamento Bíblico · Estudo Prévio</div>
+      <h1>Esperança que Sustenta</h1>
+      <p class="portal-sub">Percurso autônomo de 6 dias (30 minutos por dia) para exploração antes do nosso encontro presencial. Selecione qualquer dia abaixo para iniciar ou continuar seu estudo.</p>
+      <div class="progress-panel">
+        <div class="bar-wrap">
+          <div class="bar-label"><span>Progresso geral do estudo</span><strong id="portalProgressText">0 de 6 dias concluídos (0%)</strong></div>
+          <div class="track"><div class="fill" id="portalProgressFill"></div></div>
+        </div>
+        <div class="portal-actions">
+          <button type="button" class="btn-gold" data-action="export">Baixar Caderno Consolidado (.txt)</button>
+          <button type="button" class="btn-ghost-light" data-action="portal-notebook">Ver Todas as Anotações</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="portal-wrap portal-grid" id="portalGrid"></main>
+
+  <footer class="portal-footer">
+    Suas respostas e progresso ficam salvos automaticamente neste navegador. Todo o conteúdo funciona off-line em um único arquivo.
+  </footer>
+</div>
+
+<!-- ================= TELA 2: AMBIENTE INTERATIVO DO DIA SELECIONADO ================= -->
+<div class="app" id="dayView" hidden>
+  <aside class="sidebar" id="sidebar" aria-label="Navegação pelos módulos">
+    <div class="brand">
+      <button type="button" class="home-side-btn" data-action="home">← Menu Central (6 Dias)</button>
+      <div class="brand-title" id="sideBrandTitle">Dia 01<br>A Necessidade da Esperança</div>
+      <span class="brand-sub">Estudo Prévio · 30 min</span>
+    </div>
+    <div class="side-label">Percurso do dia</div>
+    <nav class="chapter-nav" id="chapterNav" aria-label="Etapas do dia"></nav>
+    <div class="side-footer">
+      <div class="side-progress-label"><span>Etapas deste dia</span><strong id="sidePercent">0%</strong></div>
+      <div class="side-track"><div class="side-fill" id="sideFill"></div></div>
+      <div class="side-tools">
+        <button type="button" data-action="index">Índice</button>
+        <button type="button" data-action="notebook">Meu caderno</button>
+      </div>
+      <p class="side-small">Suas anotações ficam salvas neste navegador para o encontro presencial.</p>
+    </div>
+  </aside>
+  <div class="mobile-mask" data-action="close-menu" aria-hidden="true"></div>
+  <main class="workspace" id="main">
+    <header class="topbar">
+      <div class="top-left">
+        <button type="button" class="menu-btn" data-action="menu" aria-label="Abrir menu" aria-expanded="false">☰</button>
+        <button type="button" class="top-home-btn" data-action="home" title="Voltar à grade dos 6 dias">⊞ Menu Central</button>
+        <span class="breadcrumb" id="breadcrumb">Estudo guiado</span>
+      </div>
+      <div class="top-right">
+        <span class="top-counter" id="topCounter">01 / 08</span>
+        <span class="top-divider" aria-hidden="true"></span>
+        <span class="timer-time"><span id="totalTime">00:00</span><small> / 30:00</small></span>
+        <button type="button" class="timer-button" data-action="timer" id="timerButton" aria-label="Iniciar relógio">▶ Iniciar</button>
+      </div>
+    </header>
+    <div class="presentation">
+      <article class="slide" id="slide" aria-live="polite"></article>
+      <div class="below">
+        <button class="nav-btn" type="button" data-action="prev" id="prevButton">← Anterior</button>
+        <div class="pace">
+          <strong id="paceLabel">Ritmo sugerido · 3 min</strong>
+          <span id="paceStatus">Relógio pausado</span>
+          <div class="mini-progress" aria-hidden="true"><div id="slideProgress"></div></div>
+        </div>
+        <button class="nav-btn next" type="button" data-action="next" id="nextButton">Próximo →</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ================= MODAL (ÍNDICE E CADERNO CONSOLIDADO) ================= -->
+<div class="modal" id="modal" hidden>
+  <div class="modal-dim" data-action="close-modal"></div>
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-header">
+      <h2 id="modalTitle">Índice</h2>
+      <button type="button" class="close-btn" data-action="close-modal" aria-label="Fechar">×</button>
+    </div>
+    <div class="modal-content" id="modalContent"></div>
+  </div>
+</div>
+
+<div id="print-pages" aria-hidden="true"></div>
+<noscript><p style="margin:2rem;font-family:system-ui">Ative o JavaScript para navegar pelos 6 dias de estudo, responder às atividades e salvar suas anotações neste HTML.</p></noscript>
+
+<script>
+(function(){
+  'use strict';
+  const KEY = 'ac_biblico_portal_unificado_6dias_v2';
+
+  const defaultDayState = () => ({idx:0, elapsed:0, spent:{}, visited:{0:true}, started:false});
+  const defaults = {
+    view: 'portal',
+    currentDay: 'dia01',
+    days: {},
+    notes: {},
+    answers: {}
+  };
+
+  let state;
+  try {
+    state = Object.assign({}, defaults, JSON.parse(localStorage.getItem(KEY) || '{}'));
+  } catch(e) {
+    state = Object.assign({}, defaults);
+  }
+  if (!state.days || typeof state.days !== 'object') state.days = {};
+  if (!state.notes || typeof state.notes !== 'object') state.notes = {};
+  if (!state.answers || typeof state.answers !== 'object') state.answers = {};
+
+  let running = false;
+  let modalType = null;
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  let storageOK = false;
+  try {
+    localStorage.setItem('__esperanca_u_test', '1');
+    localStorage.removeItem('__esperanca_u_test');
+    storageOK = true;
+  } catch(e) {}
+
+  const save = () => {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(state));
+    } catch(e) {
+      storageOK = false;
+    }
+  };
+
+  const $ = id => document.getElementById(id);
+  const fmt = s => {
+    const m = Math.floor(s / 60), sec = s % 60;
+    return String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+  };
+
+  /* ================= COMPONENTES INTERATIVOS DOS SLIDES ================= */
+  const note = (id, placeholder = 'Registre aqui sua reflexão para o encontro presencial; ela ficará salva neste navegador.', rows = 3) =>
+    `<textarea class="note-input" rows="${rows}" data-note="${esc(id)}" aria-label="Anotação pessoal" placeholder="${esc(placeholder)}">${esc(state.notes[id] || '')}</textarea><p class="save-note">${storageOK ? 'Salvo automaticamente neste dispositivo.' : 'Neste visualizador, as respostas podem sumir ao fechar; abra o HTML no navegador para guardá-las.'}</p>`;
+
+  function question(id) {
+    const dayObj = getDayObj(state.currentDay);
+    const q = dayObj.questions[id];
+    if (!q) return '';
+    const chosen = state.answers[id];
+    return `<div class="quiz" data-question-wrap="${id}"><div class="quiz-no">${esc(q.tag)}</div><div class="quiz-prompt">${esc(q.prompt)}</div><div class="quiz-options">${q.choices.map((o, i) => `<button type="button" class="quiz-option${chosen === i ? ' selected' + (i === q.correct ? '' : ' wrong') : ''}" data-question="${id}" data-choice="${i}" aria-pressed="${chosen === i}">${esc(o[0])}</button>`).join('')}</div>${chosen === undefined ? '' : `<div class="feedback${chosen === q.correct ? '' : ' wrong'}" role="status"><strong>${chosen === q.correct ? 'Excelente compreensão!' : 'Vamos revisar esse ponto.'}</strong>${esc(q.choices[chosen][1])}${chosen === q.correct ? '' : ' Você pode escolher outra opção.'}</div>`}</div>`;
+  }
+
+  /* ================= CONTEÚDO COMPLETO DOS 6 DIAS ================= */
+  const DAYS = [
+{id:"dia01",num:"01",tag:"Dia 01 · 30 min",shortTitle:"A Necessidade da Esperança",cardTitle:"A Necessidade e a Ênfase Bíblica da Esperança",cardDesc:"Os seis perfis de pessoas abatidas e os dez frutos que a esperança produz na santificação.",exportHeader:"DIA 01 — A NECESSIDADE E A ÊNFASE BÍBLICA DA ESPERANÇA",chapters:[{"name": "Boas-vindas", "start": 0, "end": 1}, {"name": "Quem precisa de esperança", "start": 2, "end": 3}, {"name": "A ênfase bíblica", "start": 4, "end": 5}, {"name": "Fixação para o encontro", "start": 6, "end": 7}],questions:{"d1_q1": {"tag": "Fixação 1 de 3", "prompt": "Qual é a relação central entre esperança e transformação bíblica no aconselhamento?", "correct": 1, "choices": [["A esperança é apenas um complemento opcional usado depois que o aconselhado já mudou seus hábitos.", "Na verdade, a transformação bíblica nem sequer pode ocorrer sem esperança."], ["A transformação bíblica não ocorre sem esperança, especialmente diante das crises difíceis enfrentadas no aconselhamento.", "Correto! Sem esperança, a pessoa paralisa diante do sofrimento e não encontra forças para mudar."], ["A esperança substitui o processo de santificação quando as lutas são muito intensas.", "A esperança não substitui a santificação; ela é um componente vital dentro do próprio processo de santificação."]]}, "d1_q2": {"tag": "Fixação 2 de 3", "prompt": "Qual das associações entre os frutos da esperança e suas referências bíblicas está correta?", "correct": 2, "choices": [["Estabilidade da alma (1 Timóteo 4:10) e pureza pessoal (Hebreus 6:19).", "As referências estão trocadas: Hebreus 6:19 trata da estabilidade e 1 João 3:3 da pureza pessoal."], ["Fim imediato de todas as tribulações presentes (Romanos 5:2-3).", "Romanos 5:2-3 ensina que a esperança produz alegria que perdura mesmo durante as provações, não o fim imediato delas."], ["Perseverança (Romanos 8:24-25), estabilidade (Hebreus 6:19) e pureza pessoal (1 João 3:3).", "Correto! Cada fruto da esperança está diretamente fundamentado nesses textos bíblicos."]]}, "d1_q3": {"tag": "Fixação 3 de 3", "prompt": "Qual perfil abaixo NÃO representa um dos grupos que mais necessitam de esperança no aconselhamento?", "correct": 0, "choices": [["Pessoas que nunca passaram por fracassos, perdas ou problemas prolongados.", "Correto! Os grupos destacados são justamente aqueles marcados por crises severas, lutas antigas, fracassos, reações pecaminosas, rótulos errados e desilusões."], ["Pessoas que agravaram suas dificuldades iniciais por meio de reações não bíblicas.", "Este grupo precisa muito de esperança para romper o ciclo de respostas pecaminosas."], ["Pessoas cujos problemas receberam rótulos equivocados.", "Este grupo também precisa de esperança para superar o fatalismo gerado por diagnósticos errados."]]}},slides:[
+{chapter:0,min:2,kind:"hero",title:"Dia 01 · A Necessidade e a Ênfase Bíblica da Esperança",lede:"Estudo prévio de Aconselhamento Bíblico para exploração antes do encontro presencial.",source:"Material de Estudo Prévio · Dia 01 · Aconselhamento Bíblico",body:()=>`<div class="hero-inner"><div><div class="hero-note">Sem esperança, a transformação bíblica não pode acontecer — especialmente quando o aconselhado atravessa as tempestades mais severas da vida.</div><p style="max-width:540px;color:#d8e4d6;font-size:14px">Bem-vindo ao Dia 01 da nossa jornada de estudo autônomo. Reserve 30 minutos para explorar os perfis de pessoas abatidas que buscam aconselhamento e descobrir os dez frutos que a esperança bíblica produz na santificação.</p><div class="hero-badges"><span>30 minutos</span><span>8 etapas</span><span>Estudo autônomo</span><span>Preparação para o encontro</span></div><div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:24px"><button type="button" class="action-primary" data-action="start-next">Começar Dia 01 →</button><button type="button" class="action-outline" data-action="index">Ver etapas do dia</button></div></div><div class="hero-graphic" aria-hidden="true"><div class="orb"></div><div class="orb"></div><div class="orb"></div></div></div>`},
+{chapter:0,min:3,title:"Guia de exploração do Dia 01 (30 minutos)",lede:"Como aproveitar este material preparatório antes do nosso encontro presencial.",source:"Guia de Estudo Prévio · Dia 01 · Aconselhamento Bíblico",body:()=>`<div class="grid-2"><div><div class="eyeline">O que você vai descobrir hoje</div><ul class="micro-list"><li>Por que a esperança é o ponto de partida indispensável para qualquer mudança bíblica duradoura.</li><li>Quais são os seis perfis de pessoas desesperançadas que chegam ao gabinete de aconselhamento.</li><li>Como as Escrituras conectam a esperança a dez resultados concretos no processo de santificação.</li><li>Como registrar suas reflexões no caderno digital para enriquecer nosso debate presencial.</li></ul><div class="callout green"><strong>Dica de estudo:</strong><p>Todo o conteúdo necessário está reunido nas próximas telas. Leia com calma, abra os quadros de estudo e anote suas dúvidas para conversarmos pessoalmente.</p></div></div><div><div class="eyeline">Roteiro de exploração (30 min)</div><div class="roadmap"><div class="road-row">01 · Boas-vindas <span>0–5′</span></div><div class="road-row">02 · Quem precisa de esperança <span>5–13′</span></div><div class="road-row">03 · A ênfase bíblica <span>13–22′</span></div><div class="road-row">04 · Fixação para o encontro <span>22–30′</span></div></div><p class="tiny">Você pode ativar o cronômetro no topo da tela para gerenciar seus 30 minutos de estudo.</p></div></div>`},
+{chapter:1,min:4,title:"Por que não há mudança sem esperança?",lede:"O diagnóstico inicial do conselheiro diante da paralisia espiritual e emocional.",source:"Fundamentos do Aconselhamento Bíblico · Dia 01",body:()=>`<p>Imagine alguém que atravessa um vale profundo e já não enxerga saída. No aconselhamento bíblico, aprendemos que a transformação genuína não acontece sem esperança, sobretudo nas circunstâncias difíceis com as quais lidamos no ministério pastoral.</p><div class="study-box"><span class="box-tag">Exploração do Tema · O Cenário do Aconselhamento</span><p>Quando pessoas procuram ajuda, elas frequentemente carregam pesos esmagadores: a ruptura de um divórcio, o luto pela morte de alguém amado ou o impacto da perda do emprego. Outras vêm exaustas por lutarem contra o mesmo problema durante anos sem ver melhora, ou frustradas porque tentaram sinceramente resolver suas dificuldades e fracassaram.</p><p>Há ainda aqueles que agravaram seus problemas iniciais reagindo de forma não bíblica — com raiva, amargura ou fuga —, bem como pessoas paralisadas porque seus problemas receberam rótulos errados e outras cujas esperanças foram destruídas repetidas vezes. Para ajudar verdadeiramente todas essas pessoas, inspiração e esperança precisam ser elementos centrais desde o início do aconselhamento.</p></div><div class="callout"><strong>Para refletir:</strong> Muitas vezes, o aconselhado já ouviu o que deveria fazer, mas não dá o primeiro passo porque perdeu a convicção de que a mudança é possível em sua realidade.</div>`},
+{chapter:1,min:4,title:"Seis perfis de pessoas que precisam de esperança",lede:"Mapeando as diferentes histórias de dor e desânimo que encontramos no cuidado mútuo.",source:"Mapeamento Pastoral · Dia 01",body:()=>`<div class="grid-3"><div class="card"><span class="num">PERFIL 01 · CRISES AGUDAS</span><h3>Perdas avassaladoras</h3><p class="small">Divórcio, falecimento de um ente querido ou desemprego repentino abalam a segurança cotidiana.</p></div><div class="card"><span class="num">PERFIL 02 · DESGASTE</span><h3>Lutas prolongadas</h3><p class="small">Pessoas que enfrentam exatamente o mesmo conflito ou tentação há muito tempo.</p></div><div class="card"><span class="num">PERFIL 03 · FRUSTRAÇÃO</span><h3>Tentativas frustradas</h3><p class="small">Indivíduos que se esforçaram sinceramente para solucionar o problema, mas fracassaram.</p></div><div class="card card-amber"><span class="num">PERFIL 04 · COMPLICAÇÃO</span><h3>Reações não bíblicas</h3><p class="small">Pessoas que multiplicaram a dor original ao responderem à crise com atitudes pecaminosas.</p></div><div class="card card-amber"><span class="num">PERFIL 05 · RÓTULOS</span><h3>Rotuladas de modo errado</h3><p class="small">Pessoas convencidas por diagnósticos equivocados de que sua condição é permanente e imutável.</p></div><div class="card card-amber"><span class="num">PERFIL 06 · DESILUSÃO</span><h3>Esperanças destruídas</h3><p class="small">Pessoas que confiaram em promessas vazias e sofreram decepções sucessivas.</p></div></div><div class="activity"><div class="activity-label">✎ Atividade de Exploração · 2 minutos</div><p>Escolha dois dos seis perfis acima e escreva por que alguém nessa situação tende a perder o ânimo para buscar ajuda bíblica.</p>${note('d1_perfis','Perfil 1:... Perfil 2:...',3)}</div>`},
+{chapter:2,min:5,title:"A ênfase bíblica na esperança e a santificação",lede:"Dez contribuições diretas da esperança para o crescimento cristão segundo as Escrituras.",source:"Teologia Bíblica da Santificação · Dia 01",body:()=>`<p>Nunca devemos subestimar o papel que a esperança desempenha no processo da santificação. As Escrituras revelam pelo menos dez frutos específicos que a esperança produz na vida do crente:</p><div class="study-box"><span class="box-tag">Mapa Bíblico Completo · Os 10 Frutos da Esperança</span><ol style="margin:4px 0;padding-left:20px;line-height:1.6"><li><strong>Alegria duradoura:</strong> Produz alegria que permanece firme mesmo em meio às provações mais severas (Provérbios 10:28; Romanos 5:2-3; 12:12; 1 Tessalonicenses 4:13).</li><li><strong>Perseverança:</strong> Sustenta a capacidade de aguardar com firmeza o que ainda não vemos (Romanos 8:24-25).</li><li><strong>Confiança:</strong> Gera ousadia e segurança espiritual diante dos desafios (2 Coríntios 3:12; Filipenses 1:20).</li><li><strong>Ministério eficaz:</strong> Impede o desânimo e mantém o serviço cristão frutífero sob pressão (2 Coríntios 4:8-18).</li><li><strong>Fé e amor maiores:</strong> Alimenta a fé em Cristo e o amor por todos os santos (Colossenses 1:4-5).</li><li><strong>Consistência:</strong> Produz firmeza e constância na caminhada cristã (1 Tessalonicenses 1:3).</li><li><strong>Energia e entusiasmo:</strong> Renova o vigor para trabalhar e lutar pela piedade (1 Timóteo 4:10).</li><li><strong>Estabilidade:</strong> Funciona como âncora segura e firme para a alma (Hebreus 6:19).</li><li><strong>Intimidade com Deus:</strong> Conduz a uma aproximação mais profunda e viva com o Senhor (Hebreus 7:19).</li><li><strong>Pureza pessoal:</strong> Motiva o cristão a purificar-se à semelhança de Cristo (1 João 3:3).</li></ol></div>`},
+{chapter:2,min:4,title:"Implicações práticas para o cuidado bíblico",lede:"Como essa visão bíblica orienta nossas primeiras conversas com alguém em sofrimento.",source:"Aplicação Ministerial · Dia 01",body:()=>`<div class="grid-2"><div class="card card-sage"><span class="num">O QUE EVITAR</span><h3>Exigir mudança sem esperança</h3><p>Cobrar imediatamente constância (1Ts 1:3), pureza (1Jo 3:3) e perseverança (Rm 8:24-25) de alguém que está espiritualmente exausto transforma a obediência em um fardo pesado. Sem esperança, falta fôlego para caminhar.</p></div><div class="card"><span class="num">O CAMINHO BÍBLICO</span><h3>Ancorar a alma primeiro</h3><p>Como a própria Bíblia dá enorme destaque ao papel da esperança no crescimento espiritual, devemos dar a ela o mesmo destaque no aconselhamento, permitindo que Deus gere estabilidade (Hb 6:19) e vigor (1Tm 4:10).</p></div></div><div class="activity"><div class="activity-label">✎ Reflexão Bíblica · 2 minutos</div><p>Observe a conexão entre <strong>Hebreus 7:19</strong> (intimidade com Deus) e <strong>1 João 3:3</strong> (pureza pessoal). De que forma a esperança bíblica ajuda alguém que luta contra um pecado recorrente a buscar santidade?</p>${note('d1_santificacao','A esperança bíblica impulsiona a pureza pessoal porque...',3)}<details class="reveal"><summary>Ver comentário de apoio</summary><p>Quando o crente mantém viva a expectativa da vinda de Cristo e da transformação completa (1Jo 3:3), ele não cede ao desespero nem busca alívio imediato no pecado; antes, purifica-se movido pela comunhão e proximidade com Deus (Hb 7:19).</p></details></div>`},
+{chapter:3,min:5,title:"Checagem de compreensão · Atividade interativa",lede:"Verifique se os conceitos essenciais do Dia 01 ficaram claros antes do nosso encontro.",source:"Autoavaliação Formativa · Dia 01",body:()=>`<div class="activity"><div class="activity-label">◉ Exercício de Fixação · 5 minutos</div>${question('d1_q1')}${question('d1_q2')}${question('d1_q3')}<div class="check-row"><button type="button" class="action-soft" data-action="score-final">Verificar minhas respostas</button></div><div class="final-summary" id="finalScore" role="status">Responda às três questões acima para conferir seu aproveitamento.</div></div>`},
+{chapter:3,min:3,title:"Síntese do Dia 01 · Preparando o encontro presencial",lede:"Registre sua síntese pessoal e leve suas anotações para a conversa em grupo.",source:"Encerramento do Dia 01 · Aconselhamento Bíblico",body:()=>`<div class="card card-sage"><div class="eyeline">Síntese para o encontro presencial</div><ul class="micro-list"><li><strong>Premissa fundamental:</strong> A transformação bíblica não ocorre sem esperança.</li><li><strong>Perfis atendidos:</strong> Pessoas atingidas por perdas agudas, problemas crônicos, fracassos repetidos, reações pecaminosas, rótulos errados e esperanças destruídas.</li><li><strong>Base bíblica:</strong> A esperança é instrumento indispensável da santificação, gerando 10 frutos documentados nas Escrituras.</li></ul></div><div class="activity"><div class="activity-label">✎ Registro para o Encontro · 2 minutos</div><p>Escreva em poucas linhas: qual dos dez frutos da esperança mais chamou sua atenção hoje e que pergunta você gostaria de trazer para o nosso encontro presencial?</p>${note('d1_sintese_final','O fruto que mais me chamou atenção foi... Minha pergunta para o encontro é...',3)}</div><div class="check-row"><button type="button" class="action-soft" data-action="export">Baixar meu caderno (.txt)</button><button type="button" class="action-outline" data-action="print">Imprimir Dia 01</button><button type="button" class="action-outline" data-action="index">Revisitar etapas</button></div>`}
+]},
+{id:"dia02",num:"02",tag:"Dia 02 · 30 min",shortTitle:"Falsas Esperanças",cardTitle:"Desmascarando as Falsas Esperanças",cardDesc:"Cinco alicerces frágeis (desejos, negação, ritualismo, oração passiva e eisegese) e o dever de confrontá-los.",exportHeader:"DIA 02 — DESMASCARANDO AS FALSAS ESPERANÇAS",chapters:[{"name": "Boas-vindas", "start": 0, "end": 1}, {"name": "As 5 marcas da falsa esperança", "start": 2, "end": 4}, {"name": "Desafiando ilusões", "start": 5, "end": 5}, {"name": "Fixação para o encontro", "start": 6, "end": 7}],questions:{"d2_q1": {"tag": "Fixação 1 de 3", "prompt": "O que caracteriza a chamada “postura de zagueiro em relação à espiritualidade”?", "correct": 0, "choices": [["Passar a bola para Deus na oração e esperar que Ele faça o gol sozinho, sem a nossa participação ativa e obediente.", "Correto! Oração não elimina a responsabilidade humana de trabalhar e esforçar-se na piedade (1Tm 4:7b; Mt 6:11; 2Ts 3:10)."], ["Proteger a igreja contra falsos ensinos por meio do estudo teológico.", "Não; a metáfora ilustra a passividade de quem ora mas recusa agir biblicamente."], ["Orar com fé enquanto se busca aplicar diligentemente os princípios bíblicos.", "Essa combinação de oração e ação responsável é justamente o modelo bíblico correto."]]}, "d2_q2": {"tag": "Fixação 2 de 3", "prompt": "Qual erro de leitura bíblica levou a jovem mulher do estudo de caso a nutrir amargura contra Deus após o divórcio dos pais?", "correct": 2, "choices": [["Exegese cuidadosa de Mateus 18:19 dentro do contexto de disciplina eclesiástica.", "Exegese é a leitura fiel ao contexto; o erro dela foi exatamente o oposto."], ["Negação da realidade financeira ao comprar um bem de luxo.", "Esse exemplo ilustra a falsa esperança baseada em desejos materiais."], ["Eisegese: projetar um desejo pessoal sobre Mateus 18:19, ignorando que o texto trata da disciplina na igreja (v. 15-20).", "Correto! Ela tratou o versículo como garantia automática de que o casamento dos pais seria preservado."]]}, "d2_q3": {"tag": "Fixação 3 de 3", "prompt": "Como costumam reagir as pessoas que se agarram a esperanças falsas quando o conselheiro questiona o fundamento dessas expectativas?", "correct": 1, "choices": [["Permanecem calmas e agradecidas imediatamente, pois a falsa esperança suporta qualquer crítica.", "Na verdade, é a esperança verdadeira que persiste quando desafiada."], ["Costumam irritar-se quando sua ilusão é confrontada, como fez o rei Acabe ao prender o profeta Micaías (2 Crônicas 18).", "Correto! Confrontar esperanças falsas exige coragem pastoral, pois muitos preferem o conforto imediato da ilusão."], ["Abandonam o aconselhamento e nunca mais refletem sobre a verdade.", "Nem sempre: no caso da esposa abandonada, ela continuou voltando justamente porque sabia que ouviria a verdade."]]}},slides:[
+{chapter:0,min:2,kind:"hero",title:"Dia 02 · Desmascarando as Falsas Esperanças",lede:"Estudo prévio de Aconselhamento Bíblico para exploração antes do encontro presencial.",source:"Material de Estudo Prévio · Dia 02 · Aconselhamento Bíblico",body:()=>`<div class="hero-inner"><div><div class="hero-note">Nem toda esperança sustenta a alma: aquela que se apoia em fundamentos não bíblicos inevitavelmente desaba diante da próxima tempestade (Provérbios 10:28; Lucas 6:47-49).</div><p style="max-width:540px;color:#d8e4d6;font-size:14px">Neste Dia 02 de estudo autônomo (30 minutos), você aprenderá a identificar cinco alicerces frágeis que produzem falsas esperanças — inclusive dentro da vida religiosa — e entenderá por que confrontá-los é um ato de amor.</p><div class="hero-badges"><span>30 minutos</span><span>8 etapas</span><span>5 armadilhas comuns</span><span>Preparação para o encontro</span></div><div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:24px"><button type="button" class="action-primary" data-action="start-next">Começar Dia 02 →</button><button type="button" class="action-outline" data-action="index">Ver etapas do dia</button></div></div><div class="hero-graphic" aria-hidden="true"><div class="orb"></div><div class="orb"></div><div class="orb"></div></div></div>`},
+{chapter:0,min:3,title:"Guia de exploração do Dia 02 (30 minutos)",lede:"O que observar ao distinguir esperança bíblica de ilusões reconfortantes.",source:"Guia de Estudo Prévio · Dia 02 · Aconselhamento Bíblico",body:()=>`<div class="grid-2"><div><div class="eyeline">Objetivos de exploração</div><ul class="micro-list"><li>Reconhecer as cinco características da esperança falsa presentes no cotidiano e na igreja.</li><li>Analisar quatro situações reais: o carro de luxo, o aspirante a músico, a esposa abandonada e o uso equivocado de Mateus 18:19.</li><li>Diferenciar <em>eisegese</em> de <em>exegese</em> e compreender o equilíbrio entre oração e ação responsável.</li><li>Refletir sobre o papel do conselheiro diante da resistência emocional ao confrontar ilusões (2Cr 18).</li></ul></div><div><div class="eyeline">Roteiro de exploração (30 min)</div><div class="roadmap"><div class="road-row">01 · Boas-vindas <span>0–5′</span></div><div class="road-row">02 · As 5 marcas da falsa esperança <span>5–18′</span></div><div class="road-row">03 · Desafiando ilusões <span>18–22′</span></div><div class="road-row">04 · Fixação para o encontro <span>22–30′</span></div></div><div class="callout"><strong>Foco do encontro presencial:</strong> Traga exemplos de frases comuns que revelam falsas esperanças disfarçadas de espiritualidade.</div></div></div>`},
+{chapter:1,min:4,title:"Marcas 1 e 2: Desejos humanos e negação da realidade",lede:"Quando confundimos o que queremos com o que Deus prometeu, ou negamos os fatos para consolar.",source:"Discernimento Bíblico · Dia 02",body:()=>`<p>Tanto conselheiros cristãos quanto seculares concordam que pessoas aflitas precisam de esperança. O problema surge quando essa esperança se apoia em bases humanas que ruirão (Provérbios 10:28; 11:7). Observe as duas primeiras características da falsa esperança:</p><div class="study-box"><span class="box-tag">Exploração Detalhada · Alicerces Frágeis 1 e 2</span><p><strong>1. Baseada em ideias humanas do que é agradável e desejável:</strong> Muitos acreditam que seus problemas sumirão se conseguirem o que querem: <em>"Se eu me casasse, meus problemas estariam resolvidos"</em> ou <em>"Se eu conseguisse um emprego melhor, seria mais fácil conviver comigo"</em>. Um exemplo extremo é o de uma senhora que testou um carro de luxo na concessionária e o "exigiu" do Senhor, sem ter condições financeiras de pagá-lo — o que apenas agravou suas dívidas. Deus nunca prometeu satisfazer todos os nossos desejos temporais nem isentar-nos de tribulações neste mundo (João 16:33; Tiago 1:2-4).</p><p><strong>2. Baseada na negação da realidade:</strong> Amigos bem-intencionados muitas vezes alimentam ilusões para não magoar. Foi o caso de um jovem sem nenhuma aptidão musical encorajado pelos amigos a viver de música, ou de uma esposa abandonada a quem todos garantiam que o marido voltaria. No aconselhamento, a postura honesta foi dizer: <em>"Eu não sei se ele voltará. O que eu sei é que Deus pode usar isso em sua vida para transformá-la em uma grande mulher de Deus."</em> Ela continuou buscando aconselhamento justamente porque sabia que ali ouviria a verdade.</p></div>`},
+{chapter:1,min:5,title:"Marcas 3 e 4: Pensamento mágico e oração passiva",lede:"Quando hábitos devocionais são tratados como amuletos ou desculpas para a omissão.",source:"Piedade Bíblica vs. Ritualismo · Dia 02",body:()=>`<p>A falsa esperança também se esconde por trás de práticas religiosas mal compreendidas:</p><div class="study-box"><span class="box-tag">Exploração Detalhada · Alicerces Frágeis 3 e 4</span><p><strong>3. Baseada em pensamento místico ou mágico:</strong> Alguns encaram a leitura devocional matinal como um rito protetor — <em>"um versículo por dia mantém o diabo afastado"</em> — e passam o dia amedrontados se falharem no ritual. Embora começar o dia com Deus seja excelente, a Bíblia não funciona como amuleto mágico; ela só nos abençoa quando a compreendemos e praticamos (Tiago 1:25).</p><p><strong>4. Baseada em uma visão não bíblica da oração:</strong> Muitos aconselhados dizem que oraram pelo problema, mas não fizeram mais nada, como se orar fosse tudo o que Deus exige. É a <em>"postura de zagueiro"</em> na espiritualidade: passamos a bola para Deus na oração e esperamos que Ele faça o gol sozinho. Contudo, Deus não promete santidade sem esforço pessoal (1 Timóteo 4:7b). Precisamos da força de Cristo (João 15:5), mas oração e ação caminham juntas: Jesus ensinou a orar <em>"Dá-nos hoje o nosso pão de cada dia"</em> (Mateus 6:11), enquanto Paulo ordenou: <em>"Se alguém não quiser trabalhar, também não coma"</em> (2 Tessalonicenses 3:10).</p></div><div class="activity"><div class="activity-label">✎ Atividade de Exploração · 2 minutos</div><p>Explique com suas palavras por que Mateus 6:11 e 2 Tessalonicenses 3:10 se complementam e corrigem a passividade espiritual.</p>${note('d2_oracao','Esses dois textos se complementam porque...',3)}</div>`},
+{chapter:1,min:4,title:"Marca 5: Interpretação inadequada das Escrituras (Eisegese)",lede:"O perigo de extrair versículos isolados de seu contexto original.",source:"Hermenêutica no Aconselhamento · Dia 02",body:()=>`<div class="study-box"><span class="box-tag">Exploração Detalhada · Alicerce Frágil 5</span><p><strong>5. Baseada na eisegese:</strong> Muitos cristãos praticam a <strong>eisegese</strong> (projetar uma ideia pessoal sobre o texto bíblico) em vez da <strong>exegese</strong> (extrair o sentido verdadeiro que o texto comunica em seu contexto). Abrir a Bíblia aleatoriamente e reivindicar promessas fora de contexto leva inevitavelmente à desilusão.</p><p><strong>Caso ilustrativo:</strong> Uma mulher que havia quebrado seus votos conjugais revelou que a raiz de sua crise espiritual começou anos antes. Quando seu pai ameaçou deixar sua mãe, ela e um amigo cristão oraram reivindicando Mateus 18:19 (<em>"se dois de vocês concordarem na terra em qualquer assunto sobre o qual pedirem, isso lhes será feito..."</em>). Quando o pai mesmo assim abandonou o lar, ela concluiu que Deus falhara com Sua Palavra, gerando dúvida e amargura. Na realidade, Mateus 18:19 pertence a uma passagem sobre disciplina na igreja (v. 15-20) e não garantia a preservação daquele casamento.</p></div>`},
+{chapter:2,min:4,title:"O dever de desafiar falsas esperanças",lede:"Por que o conselheiro não pode oferecer consolo ilusório, mesmo sob risco de rejeição.",source:"Coragem Pastoral · Dia 02",body:()=>`<p>Alimentar uma esperança falsa pode trazer alívio imediato, mas destrói a pessoa quando a tempestade chega (Lucas 6:47-49). Por isso, precisamos examinar e desafiar expectativas não bíblicas com amor e firmeza.</p><div class="study-box"><span class="box-tag">Lição Bíblica · O Exemplo de Micaías (2 Crônicas 18)</span><p>Enquanto a esperança verdadeira permanece firme quando questionada, quem se apega a uma esperança falsa costuma irritar-se profundamente quando ela é desafiada. Em 2 Crônicas 18, quatrocentos falsos profetas alimentavam no rei Acabe a ilusão de que Israel conquistaria Ramote-Gileade. Quando o profeta Micaías teve a coragem de dizer a verdade de Deus e desafiar aquela falsa esperança, Acabe enfureceu-se e mandou prendê-lo (v. 16-19, 26). Ainda assim, Micaías estava certo.</p></div><div class="activity"><div class="activity-label">✎ Reflexão Prática · 2 minutos</div><p>Como você responderia com verdade e compaixão a um amigo que insiste: <em>"Tenho certeza de que Deus vai restaurar meu casamento este mês porque eu e meu grupo oramos concordando nisso"</em>?</p>${note('d2_confronto','Eu diria com carinho e verdade que...',2)}</div>`},
+{chapter:3,min:5,title:"Checagem de compreensão · Atividade interativa",lede:"Teste seu discernimento sobre os cinco fundamentos da falsa esperança.",source:"Autoavaliação Formativa · Dia 02",body:()=>`<div class="activity"><div class="activity-label">◉ Exercício de Fixação · 5 minutos</div>${question('d2_q1')}${question('d2_q2')}${question('d2_q3')}<div class="check-row"><button type="button" class="action-soft" data-action="score-final">Verificar minhas respostas</button></div><div class="final-summary" id="finalScore" role="status">Responda às três questões acima para conferir seu aproveitamento.</div></div>`},
+{chapter:3,min:3,title:"Síntese do Dia 02 · Preparando o encontro presencial",lede:"Consolide os cinco pontos estudados hoje para o nosso debate.",source:"Encerramento do Dia 02 · Aconselhamento Bíblico",body:()=>`<div class="card card-sage"><div class="eyeline">Síntese para o encontro presencial</div><ol style="margin:0;padding-left:20px;font-size:14px"><li><strong>Desejos humanos:</strong> Confundir vontade pessoal com promessa divina (carro de luxo, casamento, emprego).</li><li><strong>Negação da realidade:</strong> Ignorar fatos concretos para evitar dor imediata (músico sem aptidão; marido que partiu).</li><li><strong>Pensamento mágico:</strong> Tratar devocionais como amuleto protetor sem obediência (Tiago 1:25).</li><li><strong>Oração passiva ("zagueiro"):</strong> Orar esperando que Deus faça tudo sem nossa ação responsável (Mt 6:11; 2Ts 3:10).</li><li><strong>Eisegese:</strong> Projetar desejos em versículos fora de contexto (Mateus 18:19).</li></ol></div><div class="activity"><div class="activity-label">✎ Registro para o Encontro · 2 minutos</div><p>Qual dessas cinco armadilhas você observa com mais frequência na vida cristã hoje, e por que ela parece tão atraente à primeira vista?</p>${note('d2_sintese_final','A armadilha mais comum é... Ela parece atraente porque...',3)}</div><div class="check-row"><button type="button" class="action-soft" data-action="export">Baixar meu caderno (.txt)</button><button type="button" class="action-outline" data-action="print">Imprimir Dia 02</button><button type="button" class="action-outline" data-action="index">Revisitar etapas</button></div>`}
+]},
+{id:"dia03",num:"03",tag:"Dia 03 · 30 min",shortTitle:"Verdadeira Esperança",cardTitle:"As Oito Características da Verdadeira Esperança",cardDesc:"Foco holístico (\"situação sem perda\"), realismo bíblico, renovação diária, Palavra, vontade e conhecimento.",exportHeader:"DIA 03 — AS CARACTERÍSTICAS DA VERDADEIRA ESPERANÇA",chapters:[{"name": "Boas-vindas", "start": 0, "end": 1}, {"name": "Fundamento e foco holístico", "start": 2, "end": 3}, {"name": "Realismo, Palavra e vontade", "start": 4, "end": 5}, {"name": "Fixação para o encontro", "start": 6, "end": 7}],questions:{"d3_q1": {"tag": "Fixação 1 de 3", "prompt": "O que significa afirmar que a esperança bíblica verdadeira é “holística em seu foco”?", "correct": 1, "choices": [["Ela concentra-se exclusivamente na resolução rápida dos problemas pessoais do indivíduo.", "Pelo contrário, ela amplia o olhar para além do conforto individual."], ["Ela não se limita à vida individual (a parte), mas abrange o plano eterno de Deus para o universo e Sua glória (o todo), colocando o crente sempre numa 'situação sem perda'.", "Correto! Exemplos como Paulo na prisão, José no Egito e Jó ilustram essa visão ampla do propósito soberano de Deus."], ["Ela combina filosofias orientais de bem-estar com versículos bíblicos.", "Não; o conceito refere-se à integração entre a experiência pessoal do crente e o plano global de Deus nas Escrituras."]]}, "d3_q2": {"tag": "Fixação 2 de 3", "prompt": "Como Romanos 8:28 e o exemplo de Abraão (Romanos 4:19-21) demonstram que a esperança verdadeira é realista?", "correct": 0, "choices": [["Romanos 8:28 ensina que Deus age em todas as coisas para o bem — não que todas as coisas sejam boas —, e Abraão reconheceu seu corpo sem vitalidade sem deixar de confiar no poder de Deus.", "Correto! A esperança bíblica não nega lágrimas, dor ou limitações humanas."], ["O cristão maduro não sente tristeza nem admite dificuldades reais quando confia em Deus.", "A esperança verdadeira não exclui lágrimas nem tristeza; ela encara a realidade com exatidão."], ["Deus concede uma dose única de esperança na conversão que dispensa cultivo diário.", "Na verdade, a esperança corresponde à santificação gradual e precisa ser renovada dia após dia (2 Coríntios 4:16)."]]}, "d3_q3": {"tag": "Fixação 3 de 3", "prompt": "De que modo a vontade e o conhecimento operam na esperança verdadeira?", "correct": 2, "choices": [["Somos totalmente impotentes para escolher o certo, devendo esperar que um sentimento positivo surja espontaneamente.", "A Bíblia ordena colocar a esperança em Cristo (1 Pedro 1:13), capacitando-nos pelo Espírito Santo a fazer escolhas obedientes."], ["A esperança depende de como nos sentimos emocionalmente em cada dia.", "Se basearmos nossa esperança nos sentimentos, ela desmoronará nas provações."], ["Esperança é uma escolha ordenada por Deus (1 Pedro 1:13) capacitada pelo Espírito Santo e fundamentada no conhecimento sólido da verdade bíblica (Romanos 5:2-3; Tiago 1:2-3).", "Correto! Quanto mais conhecemos a verdade de Deus, mais firmes permanecemos mesmo na dor."]]}},slides:[
+{chapter:0,min:2,kind:"hero",title:"Dia 03 · As Oito Características da Verdadeira Esperança",lede:"Estudo prévio de Aconselhamento Bíblico para exploração antes do encontro presencial.",source:"Material de Estudo Prévio · Dia 03 · Aconselhamento Bíblico",body:()=>`<div class="hero-inner"><div><div class="hero-note">O copo do cristão neste mundo nunca está meio vazio: porque Deus opera todas as coisas segundo o Seu propósito eterno, o crente vive sempre em uma situação sem perda.</div><p style="max-width:540px;color:#d8e4d6;font-size:14px">Neste Dia 03 de estudo autônomo (30 minutos), vamos explorar a anatomia completa da esperança verdadeira: o que a torna firme, realista, renovável, cristocêntrica e independente das oscilações emocionais.</p><div class="hero-badges"><span>30 minutos</span><span>8 etapas</span><span>8 marcas bíblicas</span><span>Preparação para o encontro</span></div><div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:24px"><button type="button" class="action-primary" data-action="start-next">Começar Dia 03 →</button><button type="button" class="action-outline" data-action="index">Ver etapas do dia</button></div></div><div class="hero-graphic" aria-hidden="true"><div class="orb"></div><div class="orb"></div><div class="orb"></div></div></div>`},
+{chapter:0,min:3,title:"Guia de exploração do Dia 03 (30 minutos)",lede:"Mapeando os oito pilares que distinguem a esperança bíblica de qualquer otimismo humano.",source:"Guia de Estudo Prévio · Dia 03 · Aconselhamento Bíblico",body:()=>`<div class="grid-2"><div><div class="eyeline">Objetivos de exploração</div><ul class="micro-list"><li>Compreender a diferença entre o uso cotidiano de "esperar" (incerteza) e o sentido bíblico (expectativa segura).</li><li>Entender por que a esperança verdadeira brota exclusivamente do novo nascimento em Cristo.</li><li>Aprofundar os conceitos de <em>foco holístico</em> ("situação sem perda") e <em>realismo bíblico</em>.</li><li>Analisar por que a esperança exige renovação diária, estudo da Palavra, escolha voluntária e conhecimento da verdade.</li></ul></div><div><div class="eyeline">Roteiro de exploração (30 min)</div><div class="roadmap"><div class="road-row">01 · Boas-vindas <span>0–5′</span></div><div class="road-row">02 · Fundamento e foco holístico <span>5–14′</span></div><div class="road-row">03 · Realismo, Palavra e vontade <span>14–22′</span></div><div class="road-row">04 · Fixação para o encontro <span>22–30′</span></div></div></div></div>`},
+{chapter:1,min:5,title:"Marcas 1 e 2: Expectativa bíblica e salvação verdadeira",lede:"A esperança cristã não é um palpite otimista, mas uma certeza ancorada em Cristo.",source:"Fundamentos Cristológicos · Dia 03",body:()=>`<p>No dia a dia, usamos a palavra "esperança" para indicar dúvida: <em>"Espero que meus amigos venham amanhã"</em>. Na Bíblia, porém, esperança significa <strong>expectativa pessoal e concreta</strong> apoiada nas promessas infalíveis de Deus (Isaías 8:17; Miqueias 7:7; Salmos 42:5).</p><div class="study-box"><span class="box-tag">Exploração Detalhada · Marcas 1 e 2</span><p><strong>1. Expectativa do bem baseada na Bíblia:</strong> Em Romanos 4:18, lemos que Abraão, <em>"contra toda esperança, em esperança creu"</em>, tornando-se pai de muitas nações. Sua confiança não era mera especulação, mas estava firmemente enraizada nas promessas que Deus lhe fizera (veja 2 Pedro 1:4).</p><p><strong>2. Resultado de salvação verdadeira:</strong> Nas Escrituras, a esperança está sempre ligada ao novo nascimento pelo Espírito Santo e à fé pessoal em Jesus Cristo. Deus nos regenerou para uma esperança viva (1 Pedro 1:3; Colossenses 1:4-5). Mais ainda: Cristo mesmo é a soma e a substância da nossa esperança — <em>"Cristo em vocês, a esperança da glória"</em> (Colossenses 1:27; 1 Timóteo 1:1). Por isso, é impossível garantir esperança verdadeira a quem não ama Jesus Cristo nem nasceu de novo.</p></div>`},
+{chapter:1,min:4,title:"Marcas 3 e 4: Foco holístico e realismo bíblico",lede:"Enxergar o plano soberano de Deus sem negar a realidade da dor e dos limites humanos.",source:"Soberania e Realismo · Dia 03",body:()=>`<div class="grid-2"><div class="card card-sage"><span class="num">MARCA 03 · FOCO HOLÍSTICO</span><h3>A parte e o todo</h3><p class="small">A esperança verdadeira não olha apenas para a vida individual, mas para o plano glorioso de Deus no universo. <strong>Paulo</strong>, mesmo preso, alegrou-se com o avanço do evangelho (Fp 1:12-20; 2Tm 2:8-10). <strong>José</strong> viu Deus transformar o mal de seus irmãos em salvação de muitos (Gn 50:20), e <strong>Jó</strong> proclamou: <em>"Eu sei que o meu Redentor vive"</em> (Jó 19:25). Por isso, o cristão nunca está numa situação perdida, mas sempre numa <em>"situação sem perda"</em> (Rm 8:28; Ef 1:11; Is 46:10b).</p></div><div class="card card-amber"><span class="num">MARCA 04 · REALISTA</span><h3>Lágrimas sem ilusão</h3><p class="small">Romanos 8:28 afirma que Deus age em todas as coisas para o bem, <strong>mas não diz que todas as coisas são boas</strong>. A esperança verdadeira não nega o pecado, a tristeza nem as lágrimas. Em Romanos 4:19-21, <strong>Abraão</strong> reconheceu com exatidão que seu corpo (com cerca de cem anos) e o ventre de Sara estavam sem vitalidade, mas confiou plenamente no poder de Deus para cumprir o que havia prometido.</p></div></div><div class="activity"><div class="activity-label">✎ Atividade de Exploração · 2 minutos</div><p>Explique por que o exemplo de Abraão em Romanos 4:19-21 mostra que fé e realismo não são opostos.</p>${note('d3_realismo','Abraão foi realista ao reconhecer..., mas sua fé apoiava-se em...',3)}</div>`},
+{chapter:2,min:4,title:"Marcas 5 e 6: Renovação diária e estudo diligente da Palavra",lede:"Por que a esperança exige nutrição cotidiana nas Escrituras.",source:"Meios de Graça · Dia 03",body:()=>`<div class="study-box"><span class="box-tag">Exploração Detalhada · Marcas 5 e 6</span><p><strong>5. Precisa ser renovada diariamente:</strong> Deus não aplica uma dose única de esperança que dura anos sem manutenção. Nossa esperança acompanha a obra contínua da santificação. Em 2 Coríntios 4:16, Paulo explica que não desanimava porque, embora o homem exterior se desgastasse, o interior era <em>"renovado dia após dia"</em>. Manter comunhão diária com Deus é indispensável para sustentar a esperança.</p><p><strong>6. Inseparável do estudo diligente e preciso da Palavra:</strong> O salmista declara: <em>"na sua palavra ponho a minha esperança"</em> (Salmos 119:49; 130:5). Na estrada para Emaús (Lucas 24), dois discípulos caminhavam abatidos porque a morte de Cristo parecia ter esmagado suas esperanças. Quando o Senhor ressurreto lhes expôs as Escrituras, o coração deles ardeu (v. 32) e a esperança renasceu. Sem estudo fiel da Bíblia, não há esperança verdadeira.</p></div>`},
+{chapter:2,min:4,title:"Marcas 7 e 8: Uma questão de vontade e de conhecimento",lede:"Esperança como escolha obediente capacitada pelo Espírito e ancorada na verdade conhecida.",source:"Vontade e Verdade · Dia 03",body:()=>`<p>As duas últimas características combatem o fatalismo e a instabilidade emocional:</p><div class="study-box"><span class="box-tag">Exploração Detalhada · Marcas 7 e 8</span><p><strong>7. Uma questão de vontade:</strong> Assim como a desesperança, a esperança envolve uma escolha. Em 1 Pedro 1:13, recebemos uma ordem direta: <em>"Coloquem toda a esperança na graça que lhes será dada quando Jesus Cristo for revelado"</em>. Algumas abordagens psicológicas acusam os cristãos de ignorarem a impotência humana, como se alguém se afogando pudesse puxar-se pelos próprios cabelos. Contudo, escolher o certo pelo poder do Espírito Santo não é autossuficiência (João 15:5; Filipenses 2:12; 4:13). Pregar impotência absoluta gera apenas desesperança escravizadora.</p><p><strong>8. Baseada em conhecimento:</strong> Em Romanos 5:2-3 e Tiago 1:2-3, aprendemos a nos alegrar nas tribulações <em>"porque sabemos"</em> que a provação produz perseverança. A esperança verdadeira apoia-se naquilo que <strong>sabemos</strong> da Palavra de Deus, e não em como nos <strong>sentimos</strong>. Se basearmos nossa esperança nos sentimentos, ela desmoronará na primeira crise.</p></div><div class="activity"><div class="activity-label">✎ Reflexão Prática · 2 minutos</div><p>Por que fundamentar a esperança no que <em>sabemos</em> sobre Deus é muito mais seguro do que fundamentá-la no que <em>sentimos</em> durante uma provação?</p>${note('d3_vontade','Porque durante uma provação dolorosa nossos sentimentos oscilam, enquanto...',2)}</div>`},
+{chapter:3,min:5,title:"Checagem de compreensão · Atividade interativa",lede:"Verifique seu domínio sobre as oito características da esperança verdadeira.",source:"Autoavaliação Formativa · Dia 03",body:()=>`<div class="activity"><div class="activity-label">◉ Exercício de Fixação · 5 minutos</div>${question('d3_q1')}${question('d3_q2')}${question('d3_q3')}<div class="check-row"><button type="button" class="action-soft" data-action="score-final">Verificar minhas respostas</button></div><div class="final-summary" id="finalScore" role="status">Responda às três questões acima para conferir seu aproveitamento.</div></div>`},
+{chapter:3,min:3,title:"Síntese do Dia 03 · Preparando o encontro presencial",lede:"Revise as oito marcas da esperança verdadeira e anote suas reflexões.",source:"Encerramento do Dia 03 · Aconselhamento Bíblico",body:()=>`<div class="card card-sage"><div class="eyeline">As 8 marcas da esperança verdadeira</div><ul class="micro-list"><li><strong>1. Baseada na Bíblia:</strong> Expectativa segura nas promessas de Deus (Rm 4:18).</li><li><strong>2. Fruto da salvação:</strong> Vinculada ao novo nascimento e à pessoa de Cristo (1Pe 1:3; Cl 1:27).</li><li><strong>3. Holística no foco:</strong> Mira o plano global de Deus ("situação sem perda" — Paulo, José, Jó).</li><li><strong>4. Realista:</strong> Admite dor, lágrimas e limites humanos sem negá-los (Rm 8:28; Rm 4:19).</li><li><strong>5. Renovada diariamente:</strong> Acompanha a santificação cotidiana (2Co 4:16).</li><li><strong>6. Inseparável da Palavra:</strong> Alimentada pela exposição fiel das Escrituras (Lc 24:32).</li><li><strong>7. Questão de vontade:</strong> Escolha obediente capacitada pelo Espírito Santo (1Pe 1:13; Jo 15:5).</li><li><strong>8. Baseada em conhecimento:</strong> Apoiada na verdade conhecida, não nos sentimentos (Rm 5:2-3; Tg 1:2-3).</li></ul></div><div class="activity"><div class="activity-label">✎ Registro para o Encontro · 2 minutos</div><p>Das oito características acima, qual você considera mais desafiadora de praticar em tempos de crise e por quê?</p>${note('d3_sintese_final','A característica mais desafiadora para mim é... porque...',3)}</div><div class="check-row"><button type="button" class="action-soft" data-action="export">Baixar meu caderno (.txt)</button><button type="button" class="action-outline" data-action="print">Imprimir Dia 03</button><button type="button" class="action-outline" data-action="index">Revisitar etapas</button></div>`}
+]},
+{id:"dia04",num:"04",tag:"Dia 04 · 30 min",shortTitle:"Crescendo em Cristo",cardTitle:"Ajudando as Pessoas a Crescerem em Cristo",cardDesc:"Relacionamento histórico versus comunhão vital com Cristo e o estudo de caso de Marcos 2.",exportHeader:"DIA 04 — AJUDANDO AS PESSOAS A CRESCEREM EM CRISTO",chapters:[{"name": "Boas-vindas", "start": 0, "end": 1}, {"name": "Relacionamento histórico vs. vital", "start": 2, "end": 3}, {"name": "Estudo de caso: Marcos 2", "start": 4, "end": 5}, {"name": "Fixação para o encontro", "start": 6, "end": 7}],questions:{"d4_q1": {"tag": "Fixação 1 de 3", "prompt": "Qual é o primeiro passo prático para inspirar esperança verdadeira em alguém que busca aconselhamento?", "correct": 0, "choices": [["Ajudar a pessoa a iniciar ou aprofundar um relacionamento pessoal e vital com Jesus Cristo, pois Ele próprio é a nossa esperança (1 Timóteo 1:1).", "Correto! Sem união viva com Cristo não há fonte de esperança verdadeira."], ["Aplicar técnicas de relaxamento antes de abordar qualquer tema espiritual.", "Não; o caminho bíblico começa pela comunhão pessoal com Cristo."], ["Evitar sondar a caminhada espiritual de quem afirma ser cristão há muitos anos.", "Quando há sinais de fé meramente histórica ou colapso sob provação (Lucas 6:46-49), sondar com amor é indispensável."]]}, "d4_q2": {"tag": "Fixação 2 de 3", "prompt": "No estudo de caso da mulher dominada por medos intensos, qual princípio bíblico orientou o conselheiro?", "correct": 2, "choices": [["Mateus 18:19 ('se dois de vocês concordarem na terra...').", "Mateus 18:19 foi analisado no contexto de disciplina eclesiástica."], ["2 Tessalonicenses 3:10 ('se alguém não quiser trabalhar...').", "Esse versículo trata do equilíbrio entre oração e trabalho."], ["Daniel 11:32 ('O povo que conhece o seu Deus resistirá com firmeza'), em harmonia com 1 João 4:18.", "Correto! Conhecer Deus pessoalmente gera firmeza espiritual e liberta do medo paralisante."]]}, "d4_q3": {"tag": "Fixação 3 de 3", "prompt": "O que a leitura e as anotações sobre o capítulo 2 de Marcos revelaram sobre aquela mulher em comparação com seu marido?", "correct": 1, "choices": [["Que ela possuía profunda intimidade com Jesus, enquanto o marido desconhecia o Evangelho.", "O diagnóstico foi exatamente o oposto."], ["Que, para ela, Jesus era mais uma figura histórica distante do que um amigo pessoal, pois ela apenas resumiu os fatos narrados sem aplicação pessoal.", "Correto! Enquanto o marido aplicou Marcos 2:17 à sua necessidade de perdão, ela apenas relatou os eventos em terceira pessoa."], ["Que a leitura dos Evangelhos não surtiu efeito em seus medos.", "Pelo contrário: à medida que ela passou a conhecer Cristo pessoalmente, seus medos desapareceram e a esperança cresceu."]]}},slides:[
+{chapter:0,min:2,kind:"hero",title:"Dia 04 · Ajudando as Pessoas a Crescerem em Cristo",lede:"Estudo prévio de Aconselhamento Bíblico para exploração antes do encontro presencial.",source:"Material de Estudo Prévio · Dia 04 · Aconselhamento Bíblico",body:()=>`<div class="hero-inner"><div><div class="hero-note">Como Jesus Cristo é a própria essência da nossa esperança (1 Timóteo 1:1), ninguém pode experimentar esperança verdadeira sem um relacionamento vivo e pessoal com Ele.</div><p style="max-width:540px;color:#d8e4d6;font-size:14px">Neste Dia 04 de estudo autônomo (30 minutos), iniciamos a parte prática: como inspirar esperança. Vamos explorar a diferença entre uma religiosidade histórica e uma comunhão vital com Cristo através de um estudo de caso real.</p><div class="hero-badges"><span>30 minutos</span><span>8 etapas</span><span>Estudo de caso: Marcos 2</span><span>Preparação para o encontro</span></div><div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:24px"><button type="button" class="action-primary" data-action="start-next">Começar Dia 04 →</button><button type="button" class="action-outline" data-action="index">Ver etapas do dia</button></div></div><div class="hero-graphic" aria-hidden="true"><div class="orb"></div><div class="orb"></div><div class="orb"></div></div></div>`},
+{chapter:0,min:3,title:"Guia de exploração do Dia 04 (30 minutos)",lede:"Como discernir e fortalecer a intimidade do aconselhado com Jesus Cristo.",source:"Guia de Estudo Prévio · Dia 04 · Aconselhamento Bíblico",body:()=>`<div class="grid-2"><div><div class="eyeline">Objetivos de exploração</div><ul class="micro-list"><li>Compreender por que o evangelismo e o discipulado estão no centro do aconselhamento bíblico.</li><li>Diferenciar um <em>relacionamento histórico</em> com Deus de um <em>relacionamento atual e vital</em>.</li><li>Analisar o caso da mulher paralisada por medos e a aplicação de Daniel 11:32 e 1 João 4:18.</li><li>Comparar duas maneiras de ler os Evangelhos (Marcos 2) e ver como conhecer Jesus dissipa o medo.</li></ul></div><div><div class="eyeline">Roteiro de exploração (30 min)</div><div class="roadmap"><div class="road-row">01 · Boas-vindas <span>0–5′</span></div><div class="road-row">02 · Relacionamento histórico vs. vital <span>5–13′</span></div><div class="road-row">03 · Estudo de caso: Marcos 2 <span>13–22′</span></div><div class="road-row">04 · Fixação para o encontro <span>22–30′</span></div></div></div></div>`},
+{chapter:1,min:4,title:"Cristo é a nossa esperança: sondando a comunhão com Ele",lede:"Por que não podemos oferecer esperança bíblica sem o novo nascimento e a caminhada diária com Jesus.",source:"Cristologia Prática · Dia 04",body:()=>`<p>Se Jesus Cristo é a nossa esperança (1 Timóteo 1:1), cultivar um relacionamento íntimo com Ele é o primeiro passo para inspirar esperança em qualquer pessoa.</p><div class="study-box"><span class="box-tag">Exploração Detalhada · Relacionamento Histórico vs. Relacionamento Vital</span><p><strong>Evangelismo e fundamento da salvação:</strong> Quando aconselhamos alguém que não confessa fé em Cristo, precisamos anunciar com amor que não existe esperança verdadeira fora do novo nascimento pelo Espírito de Deus (João 3:3, 36). Às vezes, até mesmo pessoas que frequentam a igreja precisam compreender a natureza da salvação genuína.</p><p><strong>Relacionamento histórico versus pessoal:</strong> Quando houver dúvida sobre a autenticidade da fé de um aconselhado, devemos fazer perguntas sondadoras. Muitos possuem apenas um <em>relacionamento histórico</em> com Deus: dizem <em>"Aceitei Jesus aos quatro anos"</em> ou <em>"Acredito que Jesus morreu na cruz"</em>, mas nada dizem sobre um relacionamento atual, vivo e obediente no presente.</p></div>`},
+{chapter:1,min:4,title:"Quando desafiar a profissão de fé ou a maturidade",lede:"Discernindo entre falta de salvação e falta de maturidade na caminhada cristã.",source:"Discernimento Espiritual · Dia 04",body:()=>`<div class="grid-2"><div class="card card-amber"><span class="num">SINAL DE ALERTA 01</span><h3>Fé apenas no passado</h3><p class="small">A pessoa apoia-se exclusivamente em uma lembrança antiga ou assentimento intelectual frio, sem sinais presentes de aproximação de Deus e obediência diária.</p></div><div class="card card-amber"><span class="num">SINAL DE ALERTA 02</span><h3>Colapso sob pressão</h3><p class="small">Quando as provações começam a destruir a fé de um cristão professo, a pressão pode estar revelando a ausência de um alicerce autêntico em Cristo (Lucas 6:46-49).</p></div></div><div class="callout green"><strong>E nos crentes verdadeiros?</strong> Muitos cristãos genuínos sofrem de falta de esperança simplesmente porque <em>carecem de maturidade em sua interação diária com Cristo e Sua Palavra</em>.</div><div class="activity"><div class="activity-label">✎ Atividade de Exploração · 2 minutos</div><p>Que perguntas gentis você faria a um amigo da igreja para ajudá-lo a avaliar se sua relação com Jesus é apenas "histórica" ou "atual e viva"?</p>${note('d4_sondagem','Eu perguntaria como tem sido...',3)}</div>`},
+{chapter:2,min:5,title:"Estudo de caso: a mulher paralisada pelo medo",lede:"Como o conhecimento pessoal de Deus vence terrores debilitantes (Daniel 11:32).",source:"Estudo de Caso Clínico · Dia 04",body:()=>`<p>Veja como a falta de profundidade no relacionamento com Cristo afeta a vida emocional e espiritual:</p><div class="study-box"><span class="box-tag">Estudo de Caso Completo · O Medo e a Leitura de Marcos</span><p>Uma mulher procurou aconselhamento acompanhada do marido, dominada por um medo intenso, irracional e paralisante. Ela ouvia vozes, via coisas, acreditava estar assombrada por demônios e recusava-se a sair de casa ou ir à igreja, conseguindo dormir apenas vestindo um casaco de couro e um chapéu de vinil.</p><p>O conselheiro lembrou-se de <strong>Daniel 11:32</strong>: <em>"O povo que conhece o seu Deus resistirá com firmeza"</em>, em harmonia com <strong>1 João 4:18</strong> (o verdadeiro amor lança fora o medo). Percebendo que a raiz estava na qualidade do relacionamento dela com Deus, pediu ao casal que lesse diariamente trechos do Evangelho de Marcos e anotasse o que haviam aprendido sobre <strong>Jesus como pessoa</strong> — não apenas fatos históricos, mas permitindo que Jesus se revelasse a eles na leitura.</p></div>`},
+{chapter:2,min:4,title:"O contraste revelador nas anotações de Marcos 2",lede:"Conhecer fatos históricos sobre Jesus versus conhecer Jesus como Salvador e Amigo.",source:"Análise Comparativa · Dia 04",body:()=>`<div class="grid-2"><div class="card card-sage"><span class="num">ANOTAÇÃO DO MARIDO</span><h3>Encontro pessoal com a graça</h3><p class="small">Ele deteve-se em Marcos 2:17 (<em>"Não são os saudáveis que precisam de um médico, mas os doentes"</em>). Reconheceu-se pecador (Isaías 53:6), maravilhou-se com o perdão, a cruz e a ressurreição de Cristo, e agradeceu pela paz interior. Ficou claro que ele tinha um relacionamento vivo e pessoal com Jesus.</p></div><div class="card card-amber"><span class="num">ANOTAÇÃO DA ESPOSA</span><h3>Resumo meramente histórico</h3><p class="small">Ela apenas descreveu os acontecimentos em terceira pessoa: Jesus em Cafarnaum, o paralítico perdoado, os escribas, a refeição na casa de Levi e a discussão sobre o jejum. Nenhuma aplicação pessoal. Para ela, Jesus era mais um personagem histórico do que um amigo próximo.</p></div></div><div class="callout"><strong>A transformação:</strong> Durante algumas semanas, o conselheiro ajudou aquela mulher a conhecer Jesus melhor por meio das Escrituras. À medida que seu relacionamento com o Senhor amadureceu, seus medos foram desaparecendo e deram lugar a uma esperança firme.</div><div class="activity"><div class="activity-label">✎ Reflexão Prática · 2 minutos</div><p>Ao ler a Bíblia no seu dia a dia, o que você pode fazer para evitar uma leitura meramente informativa (como a da esposa) e cultivar uma interação pessoal com Cristo (como a do marido)?</p>${note('d4_marcos2','Para evitar uma leitura meramente informativa, posso...',2)}</div>`},
+{chapter:3,min:5,title:"Checagem de compreensão · Atividade interativa",lede:"Avalie sua compreensão sobre o crescimento no relacionamento com Cristo.",source:"Autoavaliação Formativa · Dia 04",body:()=>`<div class="activity"><div class="activity-label">◉ Exercício de Fixação · 5 minutos</div>${question('d4_q1')}${question('d4_q2')}${question('d4_q3')}<div class="check-row"><button type="button" class="action-soft" data-action="score-final">Verificar minhas respostas</button></div><div class="final-summary" id="finalScore" role="status">Responda às três questões acima para conferir seu aproveitamento.</div></div>`},
+{chapter:3,min:3,title:"Síntese do Dia 04 · Preparando o encontro presencial",lede:"Consolide o aprendizado sobre intimidade com Cristo e preparação para o encontro.",source:"Encerramento do Dia 04 · Aconselhamento Bíblico",body:()=>`<div class="card card-sage"><div class="eyeline">Síntese para o encontro presencial</div><ul class="micro-list"><li><strong>Centro da esperança:</strong> Cristo é a nossa esperança (1Tm 1:1); sem comunhão viva com Ele não há esperança bíblica.</li><li><strong>Discernimento:</strong> Distinguir fé meramente histórica de relacionamento atual e obediente (Lc 6:46-49).</li><li><strong>Lição de Daniel 11:32 e Marcos 2:</strong> Conhecer Deus pessoalmente nas Escrituras dissipa o medo e gera firmeza.</li></ul></div><div class="activity"><div class="activity-label">✎ Registro para o Encontro · 2 minutos</div><p>Que passagem dos Evangelhos você recomendaria a alguém amedrontado para que conhecesse melhor o coração de Jesus, e por quê?</p>${note('d4_sintese_final','Eu recomendaria a passagem de... porque ela revela que Jesus...',3)}</div><div class="check-row"><button type="button" class="action-soft" data-action="export">Baixar meu caderno (.txt)</button><button type="button" class="action-outline" data-action="print">Imprimir Dia 04</button><button type="button" class="action-outline" data-action="index">Revisitar etapas</button></div>`}
+]},
+{id:"dia05",num:"05",tag:"Dia 05 · 30 min",shortTitle:"Pensar Biblicamente",cardTitle:"Ensinando a Pensar e Falar Biblicamente",cardDesc:"Cinco áreas de renovação da mente, rótulos versus redenção e correção do vocabulário vitimista.",exportHeader:"DIA 05 — ENSINANDO A PENSAR E FALAR BIBLICAMENTE",chapters:[{"name": "Boas-vindas", "start": 0, "end": 1}, {"name": "Pensar biblicamente (5 áreas)", "start": 2, "end": 4}, {"name": "Linguagem bíblica vs. vitimismo", "start": 5, "end": 5}, {"name": "Fixação para o encontro", "start": 6, "end": 7}],questions:{"d5_q1": {"tag": "Fixação 1 de 3", "prompt": "Qual é a diferença fundamental entre um diagnóstico médico e um rótulo psicológico secular?", "correct": 1, "choices": [["A medicina baseia-se apenas na observação de sentimentos, enquanto a psicologia usa exames laboratoriais.", "É justamente o contrário."], ["O médico realiza exames científicos verificáveis para confirmar a causa e a natureza da doença, enquanto o rótulo psicológico é apenas uma descrição de comportamentos observáveis sem comprovação científica da causa.", "Correto! Esses rótulos frequentemente geram fatalismo ('sou assim e não posso mudar') e afastam a pessoa de Cristo."], ["Não existe qualquer diferença metodológica entre doenças físicas e problemas emocionais.", "A distinção entre exames laboratoriais médicos e rótulos descritivos comportamentais é central nessa análise."]]}, "d5_q2": {"tag": "Fixação 2 de 3", "prompt": "Por que reconhecer que problemas pessoais e interpessoais estão ligados ao pecado é uma “boa notícia”?", "correct": 0, "choices": [["Porque Cristo veio ao mundo especificamente para nos libertar da penalidade e do poder escravizador do pecado (João 1:29; 1 Timóteo 1:15; Romanos 6).", "Correto! Se a raiz envolve o pecado, existe plena esperança de transformação pelo poder de Cristo (2 Pedro 1:3-8)."], ["Porque isenta o ser humano de qualquer responsabilidade diante de Deus.", "Pelo contrário, chama ao arrependimento e à apropriação da graça transformadora de Deus."], ["Porque elimina instantaneamente todas as lutas sem necessidade de crescimento espiritual.", "A libertação do castigo do pecado é plena, e a libertação de seu poder cresce substancialmente na santificação."]]}, "d5_q3": {"tag": "Fixação 3 de 3", "prompt": "Quando um aconselhado repete “Não posso”, quais são os três possíveis significados por trás dessa frase?", "correct": 2, "choices": [["Doença genética, falta de medicação ou trauma incurável.", "Essas explicações deterministas alimentam a desesperança."], ["Falta de amigos, falta de dinheiro ou falta de tempo.", "Não são esses os três sentidos analisados."], ["'Não quero' (rebelião); 'Não entendo os recursos que tenho em Cristo'; ou 'Não sei como praticar o que a Bíblia instrui'.", "Correto! Identificar qual dos três sentidos está presente permite responder com a orientação bíblica exata."]]}},slides:[
+{chapter:0,min:2,kind:"hero",title:"Dia 05 · Ensinando a Pensar e Falar Biblicamente",lede:"Estudo prévio de Aconselhamento Bíblico para exploração antes do encontro presencial.",source:"Material de Estudo Prévio · Dia 05 · Aconselhamento Bíblico",body:()=>`<div class="hero-inner"><div><div class="hero-note">A grande boa notícia do Evangelho não é que Jesus veio como um psicólogo cósmico para massagear o ego, mas como Salvador que nos liberta da culpa e do poder escravizador do pecado.</div><p style="max-width:540px;color:#d8e4d6;font-size:14px">Neste Dia 05 de estudo autônomo (30 minutos), exploraremos como a renovação da mente em cinco áreas essenciais e a substituição de expressões vitimistas devolvem esperança ao coração abatido.</p><div class="hero-badges"><span>30 minutos</span><span>8 etapas</span><span>5 áreas da mente</span><span>Preparação para o encontro</span></div><div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:24px"><button type="button" class="action-primary" data-action="start-next">Começar Dia 05 →</button><button type="button" class="action-outline" data-action="index">Ver etapas do dia</button></div></div><div class="hero-graphic" aria-hidden="true"><div class="orb"></div><div class="orb"></div><div class="orb"></div></div></div>`},
+{chapter:0,min:3,title:"Guia de exploração do Dia 05 (30 minutos)",lede:"Como alinhar pensamentos e palavras à verdade das Escrituras para vencer a desesperança.",source:"Guia de Estudo Prévio · Dia 05 · Aconselhamento Bíblico",body:()=>`<div class="grid-2"><div><div class="eyeline">Objetivos de exploração</div><ul class="micro-list"><li>Conhecer as cinco dimensões do <em>pensar biblicamente</em> sobre os problemas da vida.</li><li>Compreender a diferença entre diagnósticos médicos científicos e rótulos comportamentais seculares.</li><li>Entender por que a perspectiva bíblica sobre o pecado traz esperança abundante em Cristo.</li><li>Desconstruir três frases que paralisam a mudança: <em>"Não posso"</em>, <em>"Minha esposa me leva à loucura"</em> e <em>"Tentei de tudo"</em>.</li></ul></div><div><div class="eyeline">Roteiro de exploração (30 min)</div><div class="roadmap"><div class="road-row">01 · Boas-vindas <span>0–5′</span></div><div class="road-row">02 · Pensar biblicamente (5 áreas) <span>5–18′</span></div><div class="road-row">03 · Linguagem bíblica vs. vitimismo <span>18–22′</span></div><div class="road-row">04 · Fixação para o encontro <span>22–30′</span></div></div></div></div>`},
+{chapter:1,min:4,title:"Quatro frentes para renovar o pensamento",lede:"Situação específica, caráter de Deus, potencial para o bem e recursos divinos.",source:"Renovação da Mente · Dia 05",body:()=>`<p>Tanto a falsa esperança quanto a falta de esperança nascem de uma compreensão distorcida da verdade de Deus. Veja as quatro primeiras áreas em que precisamos aprender a pensar biblicamente:</p><div class="grid-2"><div class="card"><span class="num">01 · A SITUAÇÃO ESPECÍFICA</span><h3>Instruções concretas na Bíblia</h3><p class="small">Um homem desesperado por não conseguir dormir recuperou a esperança ao descobrir várias passagens bíblicas específicas sobre o sono. Saber que a Palavra fala diretamente sobre o nosso problema real — e não apenas em termos vagos — gera imensa confiança.</p></div><div class="card"><span class="num">02 · O CARÁTER DE DEUS</span><h3>Corrigindo visões distorcidas</h3><p class="small">Quem enxerga Deus como um <em>"disciplinador cruel"</em> perde a esperança por achar que nunca o agradará; quem o vê como um <em>"cara legal que tudo releva"</em> deixa o pecado dominar sua vida e colhe desespero. Conhecer o Deus santo e gracioso restaura a esperança.</p></div><div class="card card-sage"><span class="num">03 · POSSIBILIDADES PARA O BEM</span><h3>O propósito das provações</h3><p class="small">Em Tiago 1:2-4, somos exortados a considerar as provações motivo de alegria — não porque a dor seja agradável em si, mas porque Deus está no controle e usa a adversidade para forjar perseverança e maturidade em nosso caráter.</p></div><div class="card card-sage"><span class="num">04 · OS RECURSOS DIVINOS</span><h3>Suficiência em Cristo</h3><p class="small">Muitos desanimam por olharem apenas para sua fraqueza. A Bíblia garante que somos mais que vencedores (Romanos 8:37), que Deus faz transbordar toda graça suficiente (2 Coríntios 9:8) e que tudo podemos naquele que nos fortalece (Filipenses 4:13).</p></div></div>`},
+{chapter:1,min:5,title:"Quinta frente: a natureza e a causa do problema",lede:"Por que rótulos deterministas roubam a esperança, enquanto o diagnóstico bíblico liberta.",source:"Diagnóstico Bíblico · Dia 05",body:()=>`<p>Muitas pessoas perdem a esperança ao adotarem um rótulo psicológico não bíblico para suas lutas. É fundamental compreender a diferença entre a medicina e a psicologia secular nesse ponto:</p><div class="study-box"><span class="box-tag">Exploração Detalhada · Rótulos Seculares vs. Perspectiva Bíblica</span><p><strong>A diferença metodológica:</strong> Na medicina, diante de sintomas, o médico realiza exames científicos verificáveis (hemogramas, radiografias) para confirmar a causa física da doença. Já na psicologia secular, a partir de sentimentos e comportamentos observáveis, cria-se um rótulo descritivo sem comprovação científica da causa.</p><p><strong>Quatro consequências de enxergar problemas espirituais como puramente psicológicos:</strong> (1) a pessoa ignora Cristo e a Bíblia, confiando exclusivamente em remédios ou técnicas seculares; (2) passa a ver Jesus como um "psicólogo cósmico" cujo fim seria apenas elevar a autoestima; (3) cai em desespero porque o rótulo soa como sentença permanente (<em>"é isso que sou e não posso mudar"</em>); e (4) desanima ao achar que precisa mudar apenas pela força humana.</p><p><strong>A boa notícia bíblica:</strong> Quando entendemos que problemas pessoais e interpessoais estão ligados ao pecado, a esperança floresce! Pois Cristo veio exatamente para tirar o pecado (João 1:29), salvar pecadores (1 Timóteo 1:15; Mateus 1:21) e nos remir de toda maldade (Tito 2:14), libertando-nos da culpa e do poder escravizador do pecado (Romanos 6:1-23; 2 Pedro 1:3-8).</p></div>`},
+{chapter:1,min:3,title:"Apropriando-se dos recursos de 2 Pedro 1:3-8",lede:"De escravos de padrões pecaminosos a participantes de uma vida frutífera em Cristo.",source:"Recursos da Graça · Dia 05",body:()=>`<div class="callout green"><strong>A promessa de 2 Pedro 1:3-8:</strong> Em Cristo Jesus, recebemos pelo Seu divino poder tudo o que precisamos para a vida e a piedade, capacitando-nos a escapar da corrupção do mundo e desenvolver excelência moral, conhecimento, domínio próprio, perseverança, piedade, fraternidade e amor.</div><div class="activity"><div class="activity-label">✎ Atividade de Exploração · 2 minutos</div><p>Explique com suas palavras: por que dizer a alguém <em>"seu problema envolve pecado e Cristo veio libertar você do poder do pecado"</em> é uma mensagem cheia de esperança, e não de condenação?</p>${note('d5_rotulos','Porque se o problema fosse uma condição determinista imutável..., mas sendo ligado ao pecado...',3)}</div>`},
+{chapter:2,min:5,title:"Pensar biblicamente sobre o que dizemos",lede:"Substituindo frases vitimistas pela verdade que responsabiliza e fortalece.",source:"Linguagem Bíblica · Dia 05",body:()=>`<p>As palavras que usamos revelam como enxergamos Deus e a nós mesmos. Termos bíblicos (como medo, raiva, amargura, inveja) apontam para a solução nas Escrituras. Observe três expressões comuns que minam a esperança:</p><div class="study-box"><span class="box-tag">Exploração Detalhada · Três Frases Desesperançosas</span><p><strong>1. “Não posso.”</strong> Essa frase costuma significar uma de três coisas: (a) <em>"Não quero"</em> (rebelião que precisa ser confrontada com amor); (b) <em>"Não entendo os recursos que tenho em Cristo"</em> (necessidade de ensino sobre a graça capacitadora); ou (c) <em>"Não sei como fazer o que a Bíblia manda"</em> (necessidade de treinamento prático passo a passo).</p><p><strong>2. “Minha esposa me leva à loucura.”</strong> Essa afirmação é falsa e vitimista. Não é a esposa que produz a ira pecaminosa; o marido escolheu reagir com raiva às ações dela. Pela graça de Deus, todo cristão pode aprender a responder biblicamente mesmo diante de provocações.</p><p><strong>3. “Tentei de tudo, mas não funcionou.”</strong> Geralmente, quem diz isso tentou apenas o que lhe era conveniente, nutriu expectativas irreais ou buscou um "conserto rápido e fácil" para livrar-se do incômodo, em vez de perseverar na obediência a Deus.</p></div>`},
+{chapter:3,min:5,title:"Checagem de compreensão · Atividade interativa",lede:"Avalie sua compreensão sobre a renovação da mente e da linguagem.",source:"Autoavaliação Formativa · Dia 05",body:()=>`<div class="activity"><div class="activity-label">◉ Exercício de Fixação · 5 minutos</div>${question('d5_q1')}${question('d5_q2')}${question('d5_q3')}<div class="check-row"><button type="button" class="action-soft" data-action="score-final">Verificar minhas respostas</button></div><div class="final-summary" id="finalScore" role="status">Responda às três questões acima para conferir seu aproveitamento.</div></div>`},
+{chapter:3,min:3,title:"Síntese do Dia 05 · Preparando o encontro presencial",lede:"Consolide os pontos principais deste estudo antes do encontro.",source:"Encerramento do Dia 05 · Aconselhamento Bíblico",body:()=>`<div class="card card-sage"><div class="eyeline">Síntese para o encontro presencial</div><ul class="micro-list"><li><strong>Cinco áreas da mente renovada:</strong> Situação específica, caráter de Deus, potencial para o bem nas provações, recursos divinos e natureza espiritual do problema.</li><li><strong>Esperança na redenção:</strong> Cristo veio libertar-nos da culpa e do poder do pecado (Rm 6; 2Pe 1:3-8).</li><li><strong>Vocabulário da fé:</strong> Substituir desculpas como <em>"não posso"</em>, <em>"me tiram do sério"</em> e <em>"tentei de tudo"</em> pela responsabilidade capacitada por Deus.</li></ul></div><div class="activity"><div class="activity-label">✎ Registro para o Encontro · 2 minutos</div><p>Qual das três expressões desesperançosas (<em>"Não posso"</em>, <em>"Fulano me leva à loucura"</em> ou <em>"Tentei de tudo"</em>) você já se pegou dizendo e como pode reformulá-la biblicamente?</p>${note('d5_sintese_final','A expressão que mais uso é... Posso reformulá-la dizendo...',3)}</div><div class="check-row"><button type="button" class="action-soft" data-action="export">Baixar meu caderno (.txt)</button><button type="button" class="action-outline" data-action="print">Imprimir Dia 05</button><button type="button" class="action-outline" data-action="index">Revisitar etapas</button></div>`}
+]},
+{id:"dia06",num:"06",tag:"Dia 06 · 30 min",shortTitle:"Exemplo e Romanos 15:4",cardTitle:"O Poder do Exemplo e a Soberania das Escrituras",cardDesc:"O testemunho do conselheiro e da igreja e os três mecanismos de esperança em Romanos 15:4.",exportHeader:"DIA 06 — O PODER DO EXEMPLO E A SOBERANIA DAS ESCRITURAS",chapters:[{"name": "Boas-vindas", "start": 0, "end": 1}, {"name": "O poder do exemplo cristão", "start": 2, "end": 3}, {"name": "A lição de Romanos 15:4", "start": 4, "end": 5}, {"name": "Fixação para o encontro", "start": 6, "end": 7}],questions:{"d6_q1": {"tag": "Fixação 1 de 3", "prompt": "De que duas formas o exemplo de vida cristã inspira esperança em quem atravessa dificuldades?", "correct": 1, "choices": [["Apenas por meio de livros seculares de autoajuda e relatos de sucesso financeiro.", "Não; o foco está na fé bíblica encarnada na comunidade cristã."], ["Pela postura bíblica esperançosa do próprio conselheiro e pelo testemunho de outros crentes (nas Escrituras e na igreja) que enfrentaram lutas semelhantes (1 Coríntios 10:13).", "Correto! Ver a esperança vivida por outros rompe o isolamento e fortalece a fé."], ["Prometendo ao aconselhado que sua luta acabará imediatamente se ele imitar o conselheiro.", "Ninguém pode prometer o fim imediato da luta, mas sim a suficiência da graça de Deus (Efésios 3:20; Filipenses 1:6)."]]}, "d6_q2": {"tag": "Fixação 2 de 3", "prompt": "Segundo Romanos 15:4, quais são os três mecanismos pelos quais Deus gera esperança no crente?", "correct": 0, "choices": [["(1) Centralidade do ensino e encorajamento das Escrituras; (2) Exemplo de perseverança de outros e do próprio Cristo (v. 3); e (3) Remoção do elemento surpresa, mostrando que Deus está no controle.", "Correto! Esses três pilares mostram como a Palavra transforma o desânimo em esperança firme."], ["(1) Esquecimento das Escrituras; (2) Isolamento social; e (3) Imprevisibilidade total da vida.", "Essa alternativa opõe-se diretamente ao ensino de Romanos 15:4."], ["(1) Rituais diários; (2) Negação da dor; e (3) Autossuficiência humana.", "Esses elementos pertencem à falsa esperança, não à esperança bíblica."]]}, "d6_q3": {"tag": "Fixação 3 de 3", "prompt": "Qual conclusão resume a relação entre Deus e o conselheiro no processo de infundir esperança?", "correct": 2, "choices": [["O conselheiro é a fonte originária da esperança, independentemente da Palavra e do Espírito.", "Deus é o supremo doador de esperança; nós somos apenas Seus instrumentos."], ["Quando alguém não muda durante o aconselhamento, significa que a Bíblia não funciona para aquele caso.", "Na verdade, quando alguém não muda, frequentemente é porque ainda não possui esperança solidamente bíblica."], ["Deus é o supremo doador de esperança (por meio de Seu Filho, Seu Espírito e Sua Palavra), mas usa homens e mulheres para encorajar os desesperançosos a encontrarem esperança nEle.", "Correto! Essa parceria entre a graça soberana de Deus e o ministério humano conclui todo o nosso estudo."]]}},slides:[
+{chapter:0,min:2,kind:"hero",title:"Dia 06 · O Poder do Exemplo e a Soberania das Escrituras",lede:"Estudo prévio de Aconselhamento Bíblico para exploração antes do encontro presencial.",source:"Material de Estudo Prévio · Dia 06 · Aconselhamento Bíblico",body:()=>`<div class="hero-inner"><div><div class="hero-note">Deus é o supremo doador de esperança — por meio de Seu Filho, de Seu Espírito e de Sua Palavra —, e escolhe usar homens e mulheres para encorajar os abatidos a encontrarem esperança nEle.</div><p style="max-width:540px;color:#d8e4d6;font-size:14px">Chegamos ao Dia 06, encerrando nossa jornada preparatória de seis dias. Hoje exploraremos a força do testemunho cristão e as três grandes lições de Romanos 15:4 sobre como as Escrituras sustentam nossa esperança.</p><div class="hero-badges"><span>30 minutos</span><span>8 etapas</span><span>Romanos 15:4</span><span>Preparação para o encontro</span></div><div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:24px"><button type="button" class="action-primary" data-action="start-next">Começar Dia 06 →</button><button type="button" class="action-outline" data-action="index">Ver etapas do dia</button></div></div><div class="hero-graphic" aria-hidden="true"><div class="orb"></div><div class="orb"></div><div class="orb"></div></div></div>`},
+{chapter:0,min:3,title:"Guia de exploração do Dia 06 (30 minutos)",lede:"Fechando o ciclo de estudo prévio antes da nossa vivência no encontro presencial.",source:"Guia de Estudo Prévio · Dia 06 · Aconselhamento Bíblico",body:()=>`<div class="grid-2"><div><div class="eyeline">Objetivos de exploração</div><ul class="micro-list"><li>Compreender como a postura esperançosa do conselheiro inspira confiança no aflito.</li><li>Valorizar o testemunho de irmãos na fé e personagens bíblicos para vencer o isolamento (1 Coríntios 10:13).</li><li>Explorar em profundidade os três mecanismos de esperança revelados em <strong>Romanos 15:4</strong>.</li><li>Integrar o aprendizado dos seis dias de estudo para nossa conversa no encontro presencial.</li></ul></div><div><div class="eyeline">Roteiro de exploração (30 min)</div><div class="roadmap"><div class="road-row">01 · Boas-vindas <span>0–5′</span></div><div class="road-row">02 · O poder do exemplo cristão <span>5–13′</span></div><div class="road-row">03 · A lição de Romanos 15:4 <span>13–22′</span></div><div class="road-row">04 · Fixação para o encontro <span>22–30′</span></div></div></div></div>`},
+{chapter:1,min:4,title:"Nosso próprio exemplo de esperança",lede:"A postura bíblica do conselheiro como primeiro encorajamento visível para o aflito.",source:"Testemunho Pessoal · Dia 06",body:()=>`<p>Muitas pessoas que buscam ajuda precisam enxergar a esperança encarnada na vida de alguém antes de conseguirem experimentá-la por si mesmas.</p><div class="study-box"><span class="box-tag">Exploração Detalhada · A Atitude do Conselheiro</span><p><strong>Inspirando confiança pela fé em Deus:</strong> Desde o primeiro encontro, a postura bíblica e esperançosa do conselheiro transmite segurança ao aconselhado. Mesmo diante de situações extremamente difíceis, demonstramos nossa convicção de que Deus <em>"é capaz de fazer infinitamente mais do que tudo o que pedimos ou pensamos, de acordo com o seu poder que atua em nós"</em> e que <em>"para Deus todas as coisas são possíveis"</em> (Efésios 3:20; Mateus 19:26).</p><p><strong>Encorajamento sincero:</strong> Devemos elogiar sinceramente a disposição da pessoa em buscar orientação bíblica e encorajá-la com a certeza apostólica de Filipenses 1:6: <em>"Estou convencido de que aquele que começou a boa obra em vocês, vai completá-la até o dia de Cristo Jesus."</em></p></div>`},
+{chapter:1,min:4,title:"O exemplo de esperança em outros crentes",lede:"Quebrando a solidão da provação por meio da comunhão dos santos (1 Coríntios 10:13).",source:"Comunhão Bíblica · Dia 06",body:()=>`<div class="grid-2"><div class="card card-sage"><span class="num">VENCENDO O ISOLAMENTO</span><h3>Você não está sozinho</h3><p class="small">O sofrimento costuma convencer o aflito de que sua dor é única e insuportável. Mostrar como outros servos de Deus enfrentaram circunstâncias semelhantes — ou até piores — e perseveraram lembra a verdade de 1 Coríntios 10:13.</p></div><div class="card"><span class="num">NA BÍBLIA E NA IGREJA</span><h3>Histórias que fortalecem</h3><p class="small">Ler biografias bíblicas e conversar com irmãos da igreja local que superaram crises parecidas permite que Deus use a esperança visível na vida deles para fortalecer a nossa própria esperança.</p></div></div><div class="activity"><div class="activity-label">✎ Atividade de Exploração · 2 minutos</div><p>De que maneira o testemunho de um irmão maduro na fé já fortaleceu sua esperança em um momento difícil?</p>${note('d6_exemplo','Lembro-me de quando...',2)}</div>`},
+{chapter:2,min:5,title:"Romanos 15:4: três maneiras pelas quais Deus gera esperança",lede:"Exposição detalhada de como as Escrituras sustentam nossa perseverança e bom ânimo.",source:"Exposição de Romanos 15:3-4 · Dia 06",body:()=>`<p>Em Romanos 15:4, o apóstolo Paulo escreve: <em>"Pois tudo o que foi escrito no passado, foi escrito para nos ensinar, de forma que, por meio da perseverança e do bom ânimo procedentes das Escrituras, mantenhamos a nossa esperança."</em> Esse versículo revela três verdades preciosas sobre como a esperança é gerada:</p><div class="study-box"><span class="box-tag">Exploração Detalhada · Os 3 Mecanismos de Romanos 15:4</span><p><strong>1. Centralidade das Escrituras:</strong> A expressão <em>"escrito no passado"</em> aponta diretamente para a Palavra de Deus. A esperança verdadeira nunca nasce à margem da Bíblia, mas do ensino e do encorajamento que procedem das Escrituras.</p><p><strong>2. O exemplo de outros e do próprio Cristo:</strong> As Escrituras promovem perseverança mostrando homens e mulheres — e, acima de todos, o próprio Cristo (v. 3) — que enfrentaram aflições, negaram a si mesmos e responderam da maneira que agrada a Deus.</p><p><strong>3. Remoção do elemento surpresa:</strong> As Escrituras geram esperança ao nos mostrar que, embora os acontecimentos escapem ao nosso controle, jamais fogem ao controle soberano de Deus. O que enfrentamos corresponde ao que a Palavra já nos advertiu que aconteceria neste mundo caído. Saber que nada ocorre por acaso, que tudo tem propósito e que Deus está presente para nos sustentar traz descanso profundo à alma.</p></div>`},
+{chapter:2,min:4,title:"A síntese final: Deus como doador e nós como instrumentos",lede:"O agente de mudança que transforma vidas abatidas.",source:"Síntese Conclusiva · Dia 06",body:()=>`<div class="callout green"><strong>Uma verdade para guardar:</strong> A esperança é um poderoso agente de mudança. Com esperança, as pessoas encontram ânimo para obedecer e avançar; sem ela, rendem-se e caem. Quando alguém não muda durante o aconselhamento, muitas vezes é porque ainda lhe falta uma esperança solidamente bíblica.</div><p>Ao mesmo tempo em que reconhecemos que <strong>Deus é o supremo doador de esperança</strong> — concedendo-a por meio de Seu Filho, de Seu Espírito e de Sua Palavra —, compreendemos o privilégio de sermos usados por Ele para encorajar os desesperançosos a encontrarem esperança nEle.</p><div class="activity"><div class="activity-label">✎ Reflexão Bíblica · 2 minutos</div><p>Explique com suas palavras o terceiro mecanismo de Romanos 15:4: como saber que Deus está no controle e que as provações não são "surpresas" para Ele traz paz ao coração?</p>${note('d6_surpresa','Saber que Deus está no controle traz paz porque...',3)}</div>`},
+{chapter:3,min:5,title:"Checagem de compreensão · Atividade interativa",lede:"Verifique sua compreensão sobre o poder do exemplo e Romanos 15:4.",source:"Autoavaliação Formativa · Dia 06",body:()=>`<div class="activity"><div class="activity-label">◉ Exercício de Fixação · 5 minutos</div>${question('d6_q1')}${question('d6_q2')}${question('d6_q3')}<div class="check-row"><button type="button" class="action-soft" data-action="score-final">Verificar minhas respostas</button></div><div class="final-summary" id="finalScore" role="status">Responda às três questões acima para conferir seu aproveitamento.</div></div>`},
+{chapter:3,min:3,title:"Panorama dos 6 dias · Pronto para o encontro presencial!",lede:"Revise toda a jornada explorada nos seis dias de estudo autônomo.",source:"Encerramento do Dia 06 · Aconselhamento Bíblico",body:()=>`<div class="card card-sage"><div class="eyeline">Mapa completo dos 6 dias de estudo prévio</div><ul class="micro-list"><li><strong>Dia 01:</strong> Sem esperança não há transformação; os 6 perfis de desesperançados e os 10 frutos bíblicos da esperança na santificação.</li><li><strong>Dia 02:</strong> As 5 marcas da esperança falsa (desejos humanos, negação da realidade, pensamento mágico, oração passiva e eisegese) e a coragem de confrontá-las.</li><li><strong>Dia 03:</strong> As 8 características da esperança verdadeira (bíblica, em Cristo, holística, realista, renovada diariamente, na Palavra, voluntária e baseada em conhecimento).</li><li><strong>Dia 04:</strong> Inspirando esperança I — Crescer no relacionamento pessoal com Cristo (sondagem espiritual e a lição de Marcos 2).</li><li><strong>Dia 05:</strong> Inspirando esperança II — Pensar biblicamente (5 áreas, crítica aos rótulos deterministas) e corrigir a linguagem vitimista.</li><li><strong>Dia 06:</strong> Inspirando esperança III — Exemplos de vida cristã e as 3 verdades de Romanos 15:4.</li></ul></div><div class="activity"><div class="activity-label">✎ Compromisso para o Encontro Presencial · 2 minutos</div><p>Qual foi o principal aprendizado destes seis dias que você deseja compartilhar ou colocar em prática imediatamente?</p>${note('d6_sintese_final','O principal aprendizado destes seis dias foi...',4)}</div><div class="check-row"><button type="button" class="action-soft" data-action="export">Baixar meu caderno (.txt)</button><button type="button" class="action-outline" data-action="print">Imprimir Dia 06</button><button type="button" class="action-outline" data-action="index">Revisitar etapas</button></div>`}
+]}
+];
+
+  DAYS.forEach(d => {
+    if (!state.days[d.id] || typeof state.days[d.id] !== 'object') {
+      state.days[d.id] = defaultDayState();
+    } else {
+      state.days[d.id] = Object.assign(defaultDayState(), state.days[d.id]);
+    }
+  });
+
+  const getDayObj = (id) => DAYS.find(d => d.id === id) || DAYS[0];
+
+  function getDayStats(dayObj) {
+    const ds = state.days[dayObj.id];
+    const total = dayObj.slides.length;
+    const visitedCount = Object.keys(ds.visited || {}).filter(k => Number(k) >= 0 && Number(k) < total && ds.visited[k]).length;
+    const pct = Math.round((visitedCount / total) * 100);
+    const completed = visitedCount >= total;
+    const started = visitedCount > 1 || (ds.elapsed || 0) > 0;
+    return { visitedCount, total, pct, completed, started };
+  }
+
+  /* ================= RENDERIZAÇÃO DO PORTAL INICIAL (GRADE DE CARTÕES) ================= */
+  function renderPortal() {
+    running = false;
+    state.view = 'portal';
+    save();
+    $('portalView').hidden = false;
+    $('dayView').hidden = true;
+
+    let completedDays = 0;
+    let totalStepsVisited = 0;
+    let totalStepsAll = 0;
+
+    const cardsHtml = DAYS.map(d => {
+      const st = getDayStats(d);
+      totalStepsVisited += st.visitedCount;
+      totalStepsAll += st.total;
+      if (st.completed) completedDays++;
+
+      let badgeHtml = '<span class="badge pending">Não iniciado</span>';
+      let btnText = `Iniciar Dia ${d.num} →`;
+      if (st.completed) {
+        badgeHtml = '<span class="badge">✓ Concluído</span>';
+        btnText = `Revisar Dia ${d.num} →`;
+      } else if (st.started) {
+        badgeHtml = '<span class="badge doing">● Em andamento</span>';
+        btnText = `Continuar Dia ${d.num} →`;
+      }
+
+      return `
+        <article class="p-card">
+          <div>
+            <div class="p-card-top">
+              <span class="day-tag">${esc(d.tag)}</span>
+              ${badgeHtml}
+            </div>
+            <h2>${esc(d.cardTitle)}</h2>
+            <p>${esc(d.cardDesc)}</p>
+          </div>
+          <div class="p-card-foot">
+            <span>${st.visitedCount} / ${st.total} etapas</span>
+            <button type="button" class="open-day-btn" data-open-day="${esc(d.id)}">${btnText}</button>
+          </div>
+        </article>
+      `;
+    }).join('');
+
+    const overallPct = Math.round((totalStepsVisited / totalStepsAll) * 100);
+    $('portalProgressText').textContent = `${completedDays} de ${DAYS.length} dias concluídos (${overallPct}%)`;
+    $('portalProgressFill').style.width = overallPct + '%';
+    $('portalGrid').innerHTML = cardsHtml;
+    window.scrollTo(0, 0);
+  }
+
+  /* ================= RENDERIZAÇÃO DO DIA SELECIONADO ================= */
+  function openDay(dayId, slideIdx = null) {
+    const dayObj = getDayObj(dayId);
+    state.view = 'day';
+    state.currentDay = dayObj.id;
+    const ds = state.days[dayObj.id];
+    if (slideIdx !== null) {
+      ds.idx = Math.max(0, Math.min(dayObj.slides.length - 1, slideIdx));
+    }
+    ds.visited[ds.idx] = true;
+    save();
+
+    $('portalView').hidden = true;
+    $('dayView').hidden = false;
+    $('sideBrandTitle').innerHTML = `Dia ${dayObj.num}<br>${esc(dayObj.shortTitle)}`;
+    renderSlide(true);
+  }
+
+  function renderChapters() {
+    const dayObj = getDayObj(state.currentDay);
+    const ds = state.days[dayObj.id];
+    const currentChap = dayObj.slides[ds.idx].chapter;
+    $('chapterNav').innerHTML = dayObj.chapters.map((c, i) => {
+      const mins = dayObj.slides.slice(c.start, c.end + 1).reduce((n, s) => n + s.min, 0);
+      return `<button type="button" class="chapter-btn ${i === currentChap ? 'active' : ''}" data-jump="${c.start}" ${i === currentChap ? 'aria-current="step"' : ''}><span class="chapter-num">${String(i + 1).padStart(2, '0')}</span><span class="chapter-name">${esc(c.name)}</span><span class="chapter-duration">${mins}′</span></button>`;
+    }).join('');
+  }
+
+  function updateTimers() {
+    if (state.view !== 'day') return;
+    const dayObj = getDayObj(state.currentDay);
+    const ds = state.days[dayObj.id];
+    const s = dayObj.slides[ds.idx];
+    const spent = ds.spent[ds.idx] || 0;
+    $('totalTime').textContent = fmt(ds.elapsed || 0);
+    $('timerButton').textContent = running ? 'Ⅱ Pausar' : ds.started ? '▶ Retomar' : '▶ Iniciar';
+    $('timerButton').setAttribute('aria-label', running ? 'Pausar relógio de estudo' : 'Iniciar ou retomar relógio de estudo');
+    $('paceLabel').textContent = `Ritmo sugerido · ${s.min} min nesta etapa`;
+    const status = spent >= s.min * 60 ? 'Tempo sugerido concluído · avance quando quiser' : running ? `${fmt(spent)} nesta etapa · relógio ativo` : `${fmt(spent)} nesta etapa · relógio pausado`;
+    $('paceStatus').textContent = status;
+    $('slideProgress').style.width = Math.min(100, Math.round(spent / (s.min * 60) * 100)) + '%';
+  }
+
+  function renderSlide(focus = false) {
+    const dayIdx = DAYS.findIndex(d => d.id === state.currentDay);
+    const dayObj = DAYS[dayIdx] || DAYS[0];
+    const nextDayObj = DAYS[dayIdx + 1] || null;
+    const ds = state.days[dayObj.id];
+    const i = ds.idx;
+    const s = dayObj.slides[i];
+    const ch = dayObj.chapters[s.chapter];
+    let bodyHtml = typeof s.body === 'function' ? s.body() : s.body;
+
+    // Na última etapa de cada dia, adiciona navegação direta para o próximo dia e retorno ao Menu Central
+    if (i === dayObj.slides.length - 1) {
+      const nextBtn = nextDayObj
+        ? `<button type="button" class="action-primary" data-open-day="${nextDayObj.id}">Avançar para o Dia ${nextDayObj.num} →</button>`
+        : `<button type="button" class="action-primary" data-action="home">✓ Concluir Jornada (6 Dias)</button>`;
+      bodyHtml += `<div class="divider"></div><div class="check-row">${nextBtn}<button type="button" class="action-soft" data-action="home">← Voltar ao Menu Central</button></div>`;
+    }
+
+    $('slide').className = 'slide' + (s.kind === 'hero' ? ' hero' : '');
+    $('slide').innerHTML = `
+      <div class="slide-head">
+        <div class="kicker">Dia ${dayObj.num} · Parte ${String(s.chapter + 1).padStart(2, '0')} / ${dayObj.chapters.length} · ${esc(ch.name)}</div>
+        <h1 id="slideTitle" tabindex="-1">${esc(s.title)}</h1>
+        <p class="lede">${esc(s.lede)}</p>
+      </div>
+      <div class="slide-body">${bodyHtml}</div>
+      <div class="slide-foot">
+        <span class="foot-source">${esc(s.source)}</span>
+        <span class="foot-index">${String(i + 1).padStart(2, '0')} / ${dayObj.slides.length}</span>
+      </div>
+    `;
+
+    $('breadcrumb').textContent = `Dia ${dayObj.num} · ${ch.name}`;
+    $('topCounter').textContent = `${String(i + 1).padStart(2, '0')} / ${dayObj.slides.length}`;
+    $('prevButton').disabled = i === 0;
+    $('nextButton').disabled = i === dayObj.slides.length - 1;
+    $('nextButton').textContent = i === dayObj.slides.length - 2 ? 'Concluir →' : 'Próximo →';
+
+    renderChapters();
+    const st = getDayStats(dayObj);
+    $('sidePercent').textContent = st.pct + '%';
+    $('sideFill').style.width = st.pct + '%';
+    updateTimers();
+    if (modalType === 'notebook') renderNotebook();
+    if (focus) {
+      window.scrollTo(0, 0);
+      setTimeout(() => $('slideTitle')?.focus({preventScroll: true}), 0);
+    }
+  }
+
+  function go(n) {
+    const dayObj = getDayObj(state.currentDay);
+    const ds = state.days[dayObj.id];
+    if (n < 0 || n >= dayObj.slides.length) return;
+    if (n > 0 && !ds.started) {
+      ds.started = true;
+      running = true;
+    }
+    ds.idx = n;
+    ds.visited[n] = true;
+    save();
+    renderSlide(true);
+    closeMenu();
+    closeModal();
+  }
+
+  /* ================= CADERNO CONSOLIDADO E ÍNDICE ================= */
+  function renderNotebook() {
+    const entries = Object.entries(state.notes).filter(([, value]) => String(value).trim());
+    const dayObj = getDayObj(state.currentDay);
+    const ds = state.days[dayObj.id];
+    const currentMemoKey = `memo_${dayObj.id}_${ds.idx}`;
+
+    $('modalTitle').textContent = 'Meu Caderno Consolidado (6 Dias)';
+    $('modalContent').innerHTML = `
+      <p class="modal-note">Todas as suas reflexões dos 6 dias ficam reunidas aqui e salvas neste navegador.</p>
+      ${state.view === 'day' ? `
+        <label class="prompt-label" for="drawerNote">Nota livre · Dia ${dayObj.num} (Etapa ${String(ds.idx + 1).padStart(2, '0')})</label>
+        <textarea id="drawerNote" class="note-input" data-note="${currentMemoKey}" rows="3" placeholder="Anote insights ou dúvidas para o encontro presencial...">${esc(state.notes[currentMemoKey] || '')}</textarea>
+        <div class="divider"></div>
+      ` : ''}
+      <p class="tagline">Anotações registradas nos 6 dias · ${entries.length}</p>
+      ${entries.length ? `<div style="max-height:250px;overflow:auto">${entries.slice().reverse().map(([key, val]) => `<div class="card" style="margin:7px 0;padding:10px 12px"><div class="tiny">${esc(key.replaceAll('_', ' ').toUpperCase())}</div><div style="white-space:pre-wrap;font-size:12px;word-break:break-word">${esc(String(val).slice(0, 500))}${String(val).length > 500 ? '…' : ''}</div></div>`).join('')}</div>` : '<p class="small">As reflexões que você escrever nas atividades de qualquer um dos 6 dias aparecerão aqui.</p>'}
+      <div class="modal-actions">
+        <button type="button" class="action-soft" data-action="export">Baixar Caderno Consolidado (.txt)</button>
+      </div>
+    `;
+  }
+
+  function openModal(type) {
+    modalType = type;
+    $('modal').hidden = false;
+    if (type === 'notebook') {
+      renderNotebook();
+    } else {
+      const dayObj = getDayObj(state.currentDay);
+      $('modalTitle').textContent = `Índice · Dia ${dayObj.num} (30 min)`;
+      $('modalContent').innerHTML = `
+        <p class="modal-note">Clique em qualquer etapa do Dia ${dayObj.num} para navegar ou volte ao Menu Central para trocar de dia.</p>
+        <div class="index-list">${dayObj.slides.map((s, i) => {
+          const before = dayObj.slides.slice(0, i).reduce((n, x) => n + x.min, 0);
+          return `<button type="button" class="index-jump" data-jump="${i}"><span>${String(i + 1).padStart(2, '0')} · ${before}–${before + s.min} min · ${s.min} min</span>${esc(s.title)}</button>`;
+        }).join('')}</div>
+        <div class="modal-actions">
+          <button type="button" class="action-soft" data-action="home">← Ir para o Menu Central (6 Dias)</button>
+          <button type="button" class="action-outline" data-action="reset">Reiniciar progresso deste dia</button>
+        </div>
+      `;
+    }
+    $('modal').querySelector('.close-btn').focus();
+  }
+
+  function closeModal() {
+    if ($('modal').hidden) return;
+    $('modal').hidden = true;
+    modalType = null;
+  }
+
+  function closeMenu() {
+    document.body.classList.remove('menu-open');
+    document.querySelector('.menu-btn')?.setAttribute('aria-expanded', 'false');
+  }
+
+  function exportNotes() {
+    const entries = Object.entries(state.notes).filter(([, v]) => String(v).trim());
+    let text = 'ESPERANÇA QUE SUSTENTA — CADERNO CONSOLIDADO DE ESTUDO PRÉVIO (6 DIAS)\nAconselhamento Bíblico · Material de Apoio para o Encontro Presencial\n\n';
+    if (!entries.length) {
+      text += 'Nenhuma anotação registrada até o momento.\n';
+    } else {
+      for (const [k, v] of entries) {
+        text += '[ ' + k.replaceAll('_', ' ').toUpperCase() + ' ]\n' + String(v).trim() + '\n\n';
+      }
+    }
+    const blob = new Blob([text], {type: 'text/plain;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Caderno_Consolidado_6_Dias_Aconselhamento_Biblico.txt';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2500);
+  }
+
+  function scoreFinal() {
+    const dayObj = getDayObj(state.currentDay);
+    const ids = Object.keys(dayObj.questions);
+    const answered = ids.filter(id => state.answers[id] !== undefined).length;
+    const score = ids.filter(id => state.answers[id] === dayObj.questions[id].correct).length;
+    const area = $('finalScore');
+    if (!area) return;
+    area.innerHTML = answered < ids.length
+      ? `Você respondeu ${answered} de ${ids.length} questões de fixação. Responda todas e clique novamente.`
+      : `<strong>${score} de ${ids.length} questões de fixação acertadas.</strong> ${score === ids.length ? 'Excelente! Você está muito bem preparado para a discussão no encontro presencial.' : 'Revise os comentários das questões em que houve dúvida para aproveitar melhor o encontro presencial.'}`;
+  }
+
+  function printAll() {
+    const dayObj = getDayObj(state.currentDay);
+    const target = $('print-pages');
+    target.innerHTML = dayObj.slides.map((s, i) => `<section class="print-page"><div class="tagline">Dia ${dayObj.num} · Etapa ${i + 1} / ${dayObj.slides.length} · ${s.min} min · ${esc(dayObj.chapters[s.chapter].name)}</div><h2>${esc(s.title)}</h2><p>${esc(s.lede)}</p><div class="slide-body">${typeof s.body === 'function' ? s.body() : s.body}</div><p class="tiny">${esc(s.source)}</p></section>`).join('') + `<section class="print-page"><h2>Gabarito comentado · Dia ${dayObj.num}</h2>${Object.values(dayObj.questions).map(q => `<p><strong>${esc(q.prompt)}</strong><br>${esc(q.choices[q.correct][0])} — ${esc(q.choices[q.correct][1])}</p>`).join('')}</section>`;
+    target.querySelectorAll('details').forEach(d => d.open = true);
+    window.print();
+  }
+
+  /* ================= EVENTOS ================= */
+  document.addEventListener('click', e => {
+    const openDayTrigger = e.target.closest('[data-open-day]');
+    if (openDayTrigger) {
+      closeModal();
+      closeMenu();
+      openDay(openDayTrigger.dataset.openDay);
+      return;
+    }
+
+    const choice = e.target.closest('[data-question][data-choice]');
+    if (choice) {
+      const id = choice.dataset.question, idx = Number(choice.dataset.choice);
+      state.answers[id] = idx;
+      save();
+      const wrap = choice.closest('[data-question-wrap]');
+      if (wrap) {
+        wrap.outerHTML = question(id);
+        document.querySelector(`[data-question-wrap="${id}"] [data-choice="${idx}"]`)?.focus({preventScroll: true});
+      }
+      return;
+    }
+
+    const b = e.target.closest('[data-action],[data-jump]');
+    if (!b) return;
+    if (b.dataset.jump !== undefined) {
+      go(Number(b.dataset.jump));
+      return;
+    }
+
+    const a = b.dataset.action;
+    if (a === 'home') {
+      closeModal();
+      closeMenu();
+      renderPortal();
+    } else if (a === 'prev') {
+      const ds = state.days[state.currentDay];
+      go(ds.idx - 1);
+    } else if (a === 'next') {
+      const ds = state.days[state.currentDay];
+      go(ds.idx + 1);
+    } else if (a === 'start-next') {
+      running = true;
+      state.days[state.currentDay].started = true;
+      go(1);
+    } else if (a === 'timer') {
+      running = !running;
+      if (running) state.days[state.currentDay].started = true;
+      save();
+      updateTimers();
+    } else if (a === 'menu') {
+      const now = !document.body.classList.contains('menu-open');
+      document.body.classList.toggle('menu-open', now);
+      b.setAttribute('aria-expanded', String(now));
+    } else if (a === 'close-menu') {
+      closeMenu();
+    } else if (a === 'index') {
+      openModal('index');
+    } else if (a === 'notebook' || a === 'portal-notebook') {
+      openModal('notebook');
+    } else if (a === 'close-modal') {
+      closeModal();
+    } else if (a === 'export') {
+      exportNotes();
+    } else if (a === 'score-final') {
+      scoreFinal();
+    } else if (a === 'print') {
+      printAll();
+    } else if (a === 'reset') {
+      if (confirm('Reiniciar o progresso e o cronômetro deste dia? (Suas anotações escritas serão mantidas).')) {
+        state.days[state.currentDay] = defaultDayState();
+        running = false;
+        save();
+        closeModal();
+        go(0);
+      }
+    }
+  });
+
+  document.addEventListener('input', e => {
+    if (e.target.matches('[data-note]')) {
+      state.notes[e.target.dataset.note] = e.target.value;
+      save();
+    }
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      closeModal();
+      closeMenu();
+      return;
+    }
+    if (state.view !== 'day' || !$('modal').hidden) return;
+    if (/^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(document.activeElement?.tagName || '')) return;
+    const ds = state.days[state.currentDay];
+    if (e.key === 'ArrowRight') { e.preventDefault(); go(ds.idx + 1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); go(ds.idx - 1); }
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && running) {
+      running = false;
+      save();
+      updateTimers();
+    }
+  });
+
+  setInterval(() => {
+    if (state.view !== 'day' || !running || document.hidden) return;
+    const ds = state.days[state.currentDay];
+    ds.elapsed = (ds.elapsed || 0) + 1;
+    ds.spent[ds.idx] = (ds.spent[ds.idx] || 0) + 1;
+    if (ds.elapsed % 5 === 0) save();
+    updateTimers();
+  }, 1000);
+
+  renderPortal();
+})();
+</script>
+</body>
+</html>
